@@ -1,26 +1,20 @@
 {
-  "generated_at": "2025-08-16T09:00:00Z",
-  "tldr": { "headline": "Neutral → leicht risk-on: Märkte preisen Sept-Senkung ein; ETF-Zuflüsse positiv.", "stance": "Neutral" },
-  "macro": {
-    "cpi_yoy": 2.7, "cpi_month": "Juli 2025",
-    "pce_date": "29.08.2025", "fomc_next": "16.–17.09.2025",
-    "fedwatch_comment": "Chance auf −25 bp im September hoch.",
-    "sources": ["BLS", "CME FedWatch", "Federal Reserve"]
+  "btc": {
+    "price": 117651,
+    "ch24": -1.17,
+    "spark": [ { "t": "-6h", "v": 118900 }, { "t": "-4h", "v": 118200 }, { "t": "-2h", "v": 117900 }, { "t": "now", "v": 117651 } ],
+    "etf_flows_comment": "...",
+    "sources": ["Farside Investors"]
   },
-  "btc": { "price": 117651, "ch24": -1.17, "etf_flows_comment": "+114 Mio (15.08) · +524 Mio (14.08)", "sources": ["Farside Investors"] },
-  "kas": { "price": 0.0902, "ch24": -2.04, "sources": ["CoinMarketCap"] },
-  "peak": {
-    "mvrv":{"status":"elevated"}, "puell":{"status":"neutral"},
-    "rhodl":{"status":"elevated"}, "sopr":{"status":"elevated","note":">1"},
-    "funding":{"status":"elevated"}, "oi":{"status":"elevated"},
-    "miner":{"status":"neutral"}, "trends":{"status":"neutral"},
-    "sources":["LookIntoBitcoin","Coinglass","Google Trends"]
+  "kas": {
+    "price": 0.0902,
+    "ch24": -2.04,
+    "spark": [ { "t": "-6h", "v": 0.0915 }, { "t": "-4h", "v": 0.0910 }, { "t": "-2h", "v": 0.0908 }, { "t": "now", "v": 0.0902 } ],
+    "sources": ["CoinMarketCap"]
   },
   "calendar": {
-    "items":[
-      { "date":"21.–23.08.2025", "title":"Jackson Hole", "source":"KC Fed" },
-      { "date":"29.08.2025", "title":"US PCE (Juli)", "source":"BEA" }
-    ],
-    "sources":["BLS","BEA","Fed"]
+    "items": [
+      { "date": "11.09.2025", "title": "US CPI (August)", "impact": "high", "desc": "Kern- und Gesamtinflation; stärkster Markttreiber.", "source": "BLS", "link": "https://www.bls.gov/" }
+    ]
   }
 }
