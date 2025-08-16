@@ -9,46 +9,58 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <style>
     :root {
-      --bg: #f8fafc; --card: #ffffff; --muted: #64748b; --text: #0f172a;
-      --emerald: #10b981; --amber: #f59e0b; --red: #ef4444;
-      --border: #e2e8f0; --ring: #94a3b8;
+      --bg:#f8fafc; --card:#ffffff; --muted:#64748b; --text:#0f172a;
+      --emerald:#10b981; --amber:#f59e0b; --red:#ef4444; --blue:#0ea5e9;
+      --btc:#10b981; --kas:#f59e0b;
+      --border:#e2e8f0; --ring:#94a3b8;
     }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-           background: linear-gradient(to bottom, #f8fafc, #ffffff); color: var(--text); }
-    .container { max-width:1120px; margin:0 auto; padding:16px; }
-    h1 { font-size:1.375rem; margin:0 0 4px 0; }
-    .sub { color:var(--muted); font-size:0.875rem; }
-    .row { display:grid; grid-template-columns:1fr; gap:16px; }
-    @media (min-width:768px){ .row-3 { grid-template-columns: 1fr 1fr 1fr; } }
-    .card { background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
-    .card .hdr { padding:14px 16px; border-bottom:1px solid var(--border); }
-    .card h2 { font-size:1rem; margin:0; display:flex; align-items:center; gap:8px; }
-    .card .cnt { padding:12px 16px; }
-    .pill { display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:3px 8px; font-size:12px; font-weight:600; }
-    .pill.neutral { background:#d1fae5; color:#065f46; }
-    .pill.elevated { background:#fffbeb; color:#92400e; }
-    .pill.overheated { background:#fee2e2; color:#991b1b; }
-    .tldr-stance.neutral { color:#475569; } .tldr-stance.bullish { color:#059669; } .tldr-stance.bearish { color:#dc2626; }
-    .kv { font-size:.95rem; margin:4px 0; }
-    .muted { color:var(--muted); }
-    .price { font-size:1.4rem; font-weight:700; }
-    .delta.up { color:#059669; } .delta.down { color:#dc2626; }
-    .grid4 { display:grid; grid-template-columns:1fr; gap:12px; }
-    @media (min-width:1024px){ .grid4 { grid-template-columns:repeat(4,1fr); } }
-    .status-card { border:1px solid var(--border); border-radius:12px; padding:10px; }
-    .riskbar { height:8px; width:100%; background:#e5e7eb; border-radius:999px; overflow:hidden; }
-    .riskbar > div { height:100%; }
-    .btn { display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:10px; border:1px solid var(--border); background:#fff; }
-    .btn.primary { background:#0ea5e9; color:#fff; border-color:#0ea5e9; }
-    .controls { display:grid; gap:10px; }
-    input[type="text"], textarea { width:100%; padding:10px; border-radius:10px; border:1px solid var(--border); outline:none; }
-    input:focus, textarea:focus { border-color:var(--ring); }
-    ul.cal { list-style: disc inside; padding-left:18px; }
-    .sources { margin-top:8px; color:var(--muted); font-size:12px; }
-    .flex { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
-    .right {} .small { font-size:12px; } .hidden { display:none; }
-    .footer { margin:18px 0; color:var(--muted); font-size:12px; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";background:linear-gradient(to bottom,#f8fafc,#fff);color:var(--text)}
+    .container{max-width:1120px;margin:0 auto;padding:16px}
+    h1{font-size:1.375rem;margin:0 0 4px 0}
+    .sub{color:var(--muted);font-size:.875rem}
+    .row{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:768px){.row-3{grid-template-columns:1fr 1fr 1fr}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    .card .hdr{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .card h2{font-size:1rem;margin:0;display:flex;align-items:center;gap:8px}
+    .card .cnt{padding:12px 16px}
+    .pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 8px;font-size:12px;font-weight:600}
+    .pill.neutral{background:#d1fae5;color:#065f46}
+    .pill.elevated{background:#fffbeb;color:#92400e}
+    .pill.overheated{background:#fee2e2;color:#991b1b}
+    .tldr-stance.neutral{color:#475569}.tldr-stance.bullish{color:#059669}.tldr-stance.bearish{color:#dc2626}
+    .kv{font-size:.95rem;margin:4px 0}
+    .muted{color:var(--muted)}
+    .price{font-size:1.4rem;font-weight:700}
+    .delta.up{color:#059669}.delta.down{color:#dc2626}
+    .grid4{display:grid;grid-template-columns:1fr;gap:12px}
+    @media(min-width:1024px){.grid4{grid-template-columns:repeat(4,1fr)}}
+    .status-card{border:1px solid var(--border);border-radius:12px;padding:10px}
+    .riskbar{height:8px;width:100%;background:#e5e7eb;border-radius:999px;overflow:hidden}
+    .riskbar>div{height:100%}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:#fff}
+    .btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+    .controls{display:grid;gap:10px}
+    input[type="text"],textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);outline:none}
+    input:focus,textarea:focus{border-color:var(--ring)}
+    ul.cal{list-style:none;margin:0;padding:0}
+    ul.cal li{margin:8px 0}
+    details{background:#fafafa;border:1px solid var(--border);border-radius:10px;padding:8px 10px}
+    details summary{cursor:pointer;list-style:none}
+    details summary::-webkit-details-marker{display:none}
+    .sources{margin-top:8px;color:var(--muted);font-size:12px}
+    .flex{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .small{font-size:12px}
+    .hidden{display:none}
+    .footer{margin:18px 0;color:var(--muted);font-size:12px}
+    .link-small{font-size:12px;color:var(--blue);text-decoration:none}
+    .link-small:hover{text-decoration:underline}
+    .spark{width:100%;height:64px;display:block;margin-top:8px}
+    .tag{display:inline-flex;align-items:center;padding:2px 6px;border-radius:999px;font-size:11px;font-weight:600}
+    .tag.high{background:#fee2e2;color:#991b1b}
+    .tag.med{background:#fffbeb;color:#92400e}
+    .tag.low{background:#d1fae5;color:#065f46}
   </style>
 </head>
 <body>
@@ -68,9 +80,7 @@
     <div class="card" style="margin-top:12px;">
       <div class="hdr"><h2>TL;DR <span class="tldr-stance neutral" id="stance"></span></h2></div>
       <div class="cnt">
-        <div class="small muted">
-          Bedeutung: „Too Long; Didn’t Read“ – ein einzeiliges Kurzfazit (Bullish/Neutral/Bearish) mit 1–2 Hauptgründen.
-        </div>
+        <div class="small muted">Bedeutung: „Too Long; Didn’t Read“ – ein einzeiliges Kurzfazit (Bullish/Neutral/Bearish) mit 1–2 Hauptgründen.</div>
         <div id="headline" class="kv"></div>
       </div>
     </div>
@@ -100,6 +110,7 @@
             </div>
             <div class="small muted" id="etf"></div>
           </div>
+          <canvas class="spark" id="btc-chart"></canvas>
           <div class="sources" id="btc-sources"></div>
         </div>
       </div>
@@ -110,13 +121,19 @@
         <div class="cnt">
           <div class="price" id="kas-price">$–</div>
           <div class="small" id="kas-delta"></div>
+          <canvas class="spark" id="kas-chart"></canvas>
           <div class="sources" id="kas-sources"></div>
         </div>
       </div>
 
       <!-- Peak-Watch -->
-      <div class="card" style="grid-column: 1/-1;">
-        <div class="hdr"><h2>Peak-Watch (BTC)</h2></div>
+      <div class="card" style="grid-column:1/-1;">
+        <div class="hdr">
+          <h2>Peak-Watch (BTC)</h2>
+          <a class="link-small" href="https://www.coinglass.com/bull-market-peak-signals" target="_blank" rel="noopener">
+            CoinGlass Peak Signals ↗
+          </a>
+        </div>
         <div class="cnt">
           <div class="grid4" id="peak-grid"></div>
           <div class="sources" id="peak-sources"></div>
@@ -128,7 +145,7 @@
         <div class="hdr"><h2>Risiko-Ampel</h2></div>
         <div class="cnt">
           <div class="flex"><div id="risk-label" class="kv"></div><div class="kv" id="risk-score"></div></div>
-          <div class="riskbar"><div id="riskbar-fill" style="width:0%; background:#10b981;"></div></div>
+          <div class="riskbar"><div id="riskbar-fill" style="width:0%;background:#10b981;"></div></div>
           <div class="small muted" style="margin-top:8px;">Heuristik: ✅=0, ⚠️=1, 🔥=2 · Gewichte: MVRV 1.5, Puell 1.0, RHODL 1.2, SOPR 0.8, Funding 0.8, OI 1.0, Miner 0.7, Trends 0.6.</div>
         </div>
       </div>
@@ -138,6 +155,7 @@
         <div class="hdr"><h2>Kalender</h2></div>
         <div class="cnt">
           <ul class="cal" id="cal-list"></ul>
+          <div class="small muted">Tipps: Tippe/Click auf einen Termin, um Details zu öffnen.</div>
           <div class="sources" id="cal-sources"></div>
         </div>
       </div>
@@ -172,96 +190,91 @@
     /* ---------- Demo-Daten ---------- */
     const DEMO = {
       "generated_at": new Date().toISOString(),
-      "tldr": {"headline":"Neutral → leicht risk-on: Märkte preisen Sept-Senkung ein; ETF-Zuflüsse positiv.","stance":"Neutral"},
-      "macro": {
-        "cpi_yoy": 2.7, "cpi_month":"Juli 2025", "pce_date":"29.08.2025", "fomc_next":"16.–17.09.2025",
-        "fedwatch_comment":"Futures implizieren hohe Chance auf −25 bp im September.",
-        "sources":["BLS CPI (July 2025)","CME FedWatch","Federal Reserve FOMC calendar","Kansas City Fed – Jackson Hole"]
-      },
-      "btc": { "price": 117651, "ch24": -1.17, "etf_flows_comment":"+114 Mio (15.08) · +524 Mio (14.08) laut Farside", "sources":["Farside Investors","CME BTC Futures"] },
-      "kas": { "price": 0.0902, "ch24": -2.04, "sources": ["CoinMarketCap"] },
-      "peak": {
-        "mvrv":{"status":"elevated","note":"oberer Mittelbereich"},
-        "puell":{"status":"neutral"},
-        "rhodl":{"status":"elevated"},
-        "sopr":{"status":"elevated","note":">1 Umfeld"},
-        "funding":{"status":"elevated","note":"leicht positiv"},
-        "oi":{"status":"elevated","note":"> 30T-Ø"},
-        "miner":{"status":"neutral"},
-        "trends":{"status":"neutral"},
-        "sources":["LookIntoBitcoin / BM Pro","Coinglass (Funding, OI)","The Block / Google Trends"]
-      },
-      "calendar": {
-        "items":[
-          { "date":"21.–23.08.2025", "title":"Jackson Hole Symposium", "source":"Kansas City Fed" },
-          { "date":"29.08.2025", "title":"US PCE (Juli)", "source":"BEA" },
-          { "date":"10.09.2025", "title":"US PPI (August)", "source":"BLS" },
-          { "date":"11.09.2025", "title":"US CPI (August)", "source":"BLS" },
-          { "date":"16.–17.09.2025", "title":"FOMC Meeting", "source":"Federal Reserve" }
-        ],
-        "sources":["BLS","BEA","Federal Reserve","Kansas City Fed"]
-      }
+      "tldr":{"headline":"Neutral → leicht risk-on: Märkte preisen Sept-Senkung ein; ETF-Zuflüsse positiv.","stance":"Neutral"},
+      "macro":{"cpi_yoy":2.7,"cpi_month":"Juli 2025","pce_date":"29.08.2025","fomc_next":"16.–17.09.2025","fedwatch_comment":"Futures implizieren hohe Chance auf −25 bp im September.","sources":["BLS CPI (July 2025)","CME FedWatch","Federal Reserve FOMC calendar","Kansas City Fed – Jackson Hole"]},
+      "btc":{"price":117651,"ch24":-1.17,"spark":[{"t":"-6h","v":118900},{"t":"-4h","v":118200},{"t":"-2h","v":117900},{"t":"now","v":117651}],"etf_flows_comment":"+114 Mio (15.08) · +524 Mio (14.08) laut Farside","sources":["Farside Investors","CME BTC Futures"]},
+      "kas":{"price":0.0902,"ch24":-2.04,"spark":[{"t":"-6h","v":0.0915},{"t":"-4h","v":0.0910},{"t":"-2h","v":0.0908},{"t":"now","v":0.0902}],"sources":["CoinMarketCap"]},
+      "peak":{"mvrv":{"status":"elevated","note":"oberer Mittelbereich"},"puell":{"status":"neutral"},"rhodl":{"status":"elevated"},"sopr":{"status":"elevated","note":">1 Umfeld"},"funding":{"status":"elevated","note":"leicht positiv"},"oi":{"status":"elevated","note":"> 30T-Ø"},"miner":{"status":"neutral"},"trends":{"status":"neutral"},"sources":["LookIntoBitcoin / BM Pro","Coinglass (Funding, OI)","The Block / Google Trends"]},
+      "calendar":{"items":[
+        {"date":"21.–23.08.2025","title":"Jackson Hole Symposium","impact":"high","desc":"Zentraleuropäische Notenbanker & Fed – mögliche Hinweise zur Geldpolitik.","source":"Kansas City Fed","link":"https://www.kansascityfed.org/research/jackson-hole-economic-policy-symposium/"},
+        {"date":"29.08.2025","title":"US PCE (Juli)","impact":"high","desc":"Bevorzugtes Inflationsmaß der Fed; wichtig für September-Entscheidung.","source":"BEA","link":"https://www.bea.gov/"},
+        {"date":"10.09.2025","title":"US PPI (August)","impact":"med","desc":"Erzeugerpreise – Frühindikator für CPI.","source":"BLS","link":"https://www.bls.gov/"},
+        {"date":"11.09.2025","title":"US CPI (August)","impact":"high","desc":"Kern- und Gesamtinflation; stärkster Markttreiber.","source":"BLS","link":"https://www.bls.gov/"},
+        {"date":"16.–17.09.2025","title":"FOMC Meeting","impact":"high","desc":"Zinsentscheid + Dot Plot/Pressekonferenz.","source":"Federal Reserve","link":"https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"}
+      ],"sources":["BLS","BEA","Federal Reserve","Kansas City Fed"]}
     };
 
     /* ---------- Heuristik & Render ---------- */
-    const weights = { mvrv:1.5, puell:1.0, rhodl:1.2, sopr:0.8, funding:0.8, oi:1.0, miner:0.7, trends:0.6 };
-    const scoreFor = s => s==='overheated'?2 : s==='elevated'?1 : 0;
-    function riskScore(peak){
-      if(!peak) return { total:0, light:'green' };
-      const t = scoreFor(peak.mvrv?.status)*weights.mvrv +
-                scoreFor(peak.puell?.status)*weights.puell +
-                scoreFor(peak.rhodl?.status)*weights.rhodl +
-                scoreFor(peak.sopr?.status)*weights.sopr +
-                scoreFor(peak.funding?.status)*weights.funding +
-                scoreFor(peak.oi?.status)*weights.oi +
-                scoreFor(peak.miner?.status)*weights.miner +
-                scoreFor(peak.trends?.status)*weights.trends;
-      const light = t < 3 ? 'green' : (t <= 6 ? 'yellow' : 'red');
-      return { total:Number(t.toFixed(1)), light };
+    const weights={mvrv:1.5,puell:1.0,rhodl:1.2,sopr:0.8,funding:0.8,oi:1.0,miner:0.7,trends:0.6};
+    const scoreFor=s=>s==='overheated'?2:(s==='elevated'?1:0);
+    let LAST=null;
+
+    function riskScore(p){if(!p)return{total:0,light:'green'};const t=scoreFor(p.mvrv?.status)*weights.mvrv+scoreFor(p.puell?.status)*weights.puell+scoreFor(p.rhodl?.status)*weights.rhodl+scoreFor(p.sopr?.status)*weights.sopr+scoreFor(p.funding?.status)*weights.funding+scoreFor(p.oi?.status)*weights.oi+scoreFor(p.miner?.status)*weights.miner+scoreFor(p.trends?.status)*weights.trends;return{total:Number(t.toFixed(1)),light:t<3?'green':(t<=6?'yellow':'red')}}
+
+    function setText(id,val){const el=document.getElementById(id);if(el)el.textContent=(val??'')}
+    function renderSources(id,arr){const el=document.getElementById(id);if(!el)return;el.textContent=(arr&&arr.length)?('Quellen: '+arr.join(', ')):''}
+
+    function drawSpark(id, points, color){
+      const cv=document.getElementById(id);
+      if(!cv){return}
+      if(!points || points.length<2){cv.classList.add('hidden');return}
+      cv.classList.remove('hidden');
+      const dpr=window.devicePixelRatio||1;
+      const parentW = cv.clientWidth || cv.parentElement.clientWidth || 320;
+      const W = Math.max(160, parentW);
+      const H = 64;
+      cv.width = Math.floor(W*dpr); cv.height=Math.floor(H*dpr);
+      cv.style.width=W+'px'; cv.style.height=H+'px';
+      const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      ctx.clearRect(0,0,W,H);
+      const vals=points.map(p=>p.v);
+      const min=Math.min(...vals), max=Math.max(...vals);
+      const pad=4, n=points.length, step=W/(n-1||1);
+      ctx.lineWidth=1.6; ctx.strokeStyle=color||'#0ea5e9'; ctx.beginPath();
+      for(let i=0;i<n;i++){
+        const x=i*step;
+        const y=H-((points[i].v-min)/(max-min||1))*(H-pad*2)-pad;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
     }
-    function setText(id, val){ const el=document.getElementById(id); if(el) el.textContent = (val ?? ''); }
-    function renderSources(id, arr){ const el=document.getElementById(id); if(!el) return; el.textContent = (arr && arr.length) ? ('Quellen: '+arr.join(', ')) : ''; }
 
     function render(data){
+      LAST=data;
       setText('last-upd','Letztes Update: '+new Date(data.generated_at).toLocaleString());
-      const stance = (data.tldr?.stance||'Neutral').toLowerCase();
-      const stanceEl = document.getElementById('stance');
-      stanceEl.className = 'tldr-stance ' + (stance==='bullish'?'bullish':stance==='bearish'?'bearish':'neutral');
-      setText('stance', data.tldr?.stance || 'Neutral');
-      setText('headline', data.tldr?.headline || '');
+      const stance=(data.tldr?.stance||'Neutral').toLowerCase();
+      const stanceEl=document.getElementById('stance');
+      stanceEl.className='tldr-stance '+(stance==='bullish'?'bullish':(stance==='bearish'?'bearish':'neutral'));
+      setText('stance',data.tldr?.stance||'Neutral');
+      setText('headline',data.tldr?.headline||'');
 
-      setText('cpi', (data.macro?.cpi_yoy!=null)? (data.macro.cpi_yoy.toFixed(1)+' %') : '–');
-      setText('cpimonth', data.macro?.cpi_month ? '('+data.macro.cpi_month+')' : '');
-      setText('fomc', data.macro?.fomc_next || '–');
-      setText('pce', data.macro?.pce_date || '–');
-      setText('fedwatch', data.macro?.fedwatch_comment || '');
-      renderSources('macro-sources', data.macro?.sources || []);
+      setText('cpi',(data.macro?.cpi_yoy!=null)?(data.macro.cpi_yoy.toFixed(1)+' %'):'–');
+      setText('cpimonth',data.macro?.cpi_month?'('+data.macro.cpi_month+')':'');
+      setText('fomc',data.macro?.fomc_next||'–');
+      setText('pce',data.macro?.pce_date||'–');
+      setText('fedwatch',data.macro?.fedwatch_comment||'');
+      renderSources('macro-sources',data.macro?.sources||[]);
 
-      setText('btc-price', data.btc?.price!=null ? '$'+data.btc.price.toLocaleString() : '$–');
+      setText('btc-price',data.btc?.price!=null?'$'+data.btc.price.toLocaleString():'$–');
       const bd=document.getElementById('btc-delta');
-      if(bd && data.btc?.ch24!=null){
-        bd.textContent=(data.btc.ch24>=0?'+':'')+data.btc.ch24.toFixed(2)+'% / 24h';
-        bd.className='small '+(data.btc.ch24>=0?'delta up':'delta down');
-      }
-      setText('etf', data.btc?.etf_flows_comment || '');
-      renderSources('btc-sources', data.btc?.sources || []);
+      if(bd && data.btc?.ch24!=null){bd.textContent=(data.btc.ch24>=0?'+':'')+data.btc.ch24.toFixed(2)+'% / 24h'; bd.className='small '+(data.btc.ch24>=0?'delta up':'delta down');}
+      setText('etf',data.btc?.etf_flows_comment||'');
+      renderSources('btc-sources',data.btc?.sources||[]);
+      drawSpark('btc-chart', data.btc?.spark, getComputedStyle(document.documentElement).getPropertyValue('--btc').trim());
 
-      setText('kas-price', data.kas?.price!=null ? '$'+(Math.round(data.kas.price*10000)/10000).toFixed(4) : '$–');
+      setText('kas-price',data.kas?.price!=null?'$'+(Math.round(data.kas.price*10000)/10000).toFixed(4):'$–');
       const kd=document.getElementById('kas-delta');
-      if(kd && data.kas?.ch24!=null){
-        kd.textContent=(data.kas.ch24>=0?'+':'')+data.kas.ch24.toFixed(2)+'% / 24h';
-        kd.className='small '+(data.kas.ch24>=0?'delta up':'delta down');
-      }
-      renderSources('kas-sources', data.kas?.sources || []);
+      if(kd && data.kas?.ch24!=null){kd.textContent=(data.kas.ch24>=0?'+':'')+data.kas.ch24.toFixed(2)+'% / 24h'; kd.className='small '+(data.kas.ch24>=0?'delta up':'delta down');}
+      renderSources('kas-sources',data.kas?.sources||[]);
+      drawSpark('kas-chart', data.kas?.spark, getComputedStyle(document.documentElement).getPropertyValue('--kas').trim());
 
       const grid=document.getElementById('peak-grid');
       if(grid){
-        const map=[ ['mvrv','MVRV Z-Score'], ['puell','Puell Multiple'], ['rhodl','RHODL Ratio'], ['sopr','SOPR'],
-                    ['funding','Funding-Rate'], ['oi','Open Interest'], ['miner','Miner-Flows'], ['trends','Google Trends'] ];
+        const map=[['mvrv','MVRV Z-Score'],['puell','Puell Multiple'],['rhodl','RHODL Ratio'],['sopr','SOPR'],['funding','Funding-Rate'],['oi','Open Interest'],['miner','Miner-Flows'],['trends','Google Trends']];
         grid.innerHTML = map.map(([k,label])=>{
-          const it=data.peak?.[k] || {status:'neutral'};
-          const cls= it.status==='neutral'?'pill neutral' : it.status==='elevated'?'pill elevated' : 'pill overheated';
-          const lbl= it.status==='neutral'?'Neutral' : it.status==='elevated'?'Erhöht' : 'Überhitzt';
+          const it=data.peak?.[k]||{status:'neutral'};
+          const cls=it.status==='neutral'?'pill neutral':(it.status==='elevated'?'pill elevated':'pill overheated');
+          const lbl=it.status==='neutral'?'Neutral':(it.status==='elevated'?'Erhöht':'Überhitzt');
           return `<div class="status-card"><div class="flex"><div class="kv" style="font-weight:600;">${label}</div><span class="${cls}">${lbl}</span></div>${it.note?`<div class="small muted" style="margin-top:6px;">${it.note}</div>`:''}</div>`;
         }).join('');
       }
@@ -269,7 +282,7 @@
 
       const r=riskScore(data.peak||{});
       setText('risk-score','Score: '+r.total);
-      setText('risk-label', r.light==='green'?'🟢 Niedrig' : (r.light==='yellow'?'🟡 Moderat':'🔴 Hoch'));
+      setText('risk-label', r.light==='green'?'🟢 Niedrig':(r.light==='yellow'?'🟡 Moderat':'🔴 Hoch'));
       const fill=document.getElementById('riskbar-fill');
       if(fill){
         let pct=0;
@@ -277,12 +290,21 @@
         else if(r.light==='yellow') pct=Math.min(100,((r.total-3)/3)*100);
         else pct=Math.min(100,((r.total-6)/3)*100);
         fill.style.width=pct+'%';
-        fill.style.background= r.light==='green'?'#10b981' : (r.light==='yellow'?'#f59e0b':'#ef4444');
+        fill.style.background=r.light==='green'?'#10b981':(r.light==='yellow'?'#f59e0b':'#ef4444');
       }
 
       const ul=document.getElementById('cal-list');
       if(ul){
-        ul.innerHTML=(data.calendar?.items||[]).map(it=>`<li><b>${it.date}</b> — ${it.title} ${it.source?`<span class="muted">(${it.source})</span>`:''}</li>`).join('');
+        ul.innerHTML=(data.calendar?.items||[]).map(it=>{
+          const impact=it.impact==='high'?'high':(it.impact==='medium'?'med':'low');
+          const impactLabel=impact==='high'?'Hoch':(impact==='med'?'Mittel':'Niedrig');
+          const pill = it.impact ? `<span class="tag ${impact}">${impactLabel}</span>` : '';
+          const summary=`<b>${it.date}</b> — ${it.title} ${pill}`;
+          const body = (it.desc||it.link||it.source)
+            ? `<div class="small" style="margin-top:6px;">${it.desc?it.desc:''} ${it.link?`<a class="link-small" href="${it.link}" target="_blank" rel="noopener">Mehr ↗</a>`:''} ${it.source?`<span class="muted">(${it.source})</span>`:''}</div>`
+            : '';
+          return `<li><details><summary>${summary}</summary>${body}</details></li>`;
+        }).join('');
       }
       renderSources('cal-sources', data.calendar?.sources || []);
     }
@@ -290,71 +312,38 @@
     /* ---------- Auto-Fetch mit Cache-Buster ---------- */
     async function doFetch(url){
       try{
-        const bust = (url.includes('?') ? '&' : '?') + 'v=' + Date.now();
-        const resp = await fetch(url + bust, { headers:{'accept':'application/json'}, cache:'no-store' });
+        const bust=(url.includes('?')?'&':'?')+'v='+Date.now();
+        const resp=await fetch(url+bust,{headers:{'accept':'application/json'},cache:'no-store'});
         if(!resp.ok) throw new Error('HTTP '+resp.status);
-        const j = await resp.json();
+        const j=await resp.json();
         render(j);
-      }catch(e){
-        console.warn('Fetch-Fehler:', e);
-      }
+      }catch(e){ console.warn('Fetch-Fehler:',e); }
     }
 
     /* ---------- UI / Events ---------- */
-    const settings = document.getElementById('settings');
-    document.getElementById('btn-settings').onclick = () => settings.classList.toggle('hidden');
+    const settings=document.getElementById('settings');
+    document.getElementById('btn-settings').onclick=()=>settings.classList.toggle('hidden');
+    document.getElementById('btn-demo').onclick=()=>{render(DEMO);};
+    document.getElementById('btn-filldemo').onclick=()=>{document.getElementById('manualjson').value=JSON.stringify(DEMO,null,2);};
+    document.getElementById('btn-apply').onclick=()=>{const raw=document.getElementById('manualjson').value;try{render(JSON.parse(raw));}catch(e){alert('Ungültiges JSON: '+e);}};
+    const ep=document.getElementById('endpoint');
+    try{const saved=localStorage.getItem('cryptoDash.endpoint');if(saved)ep.value=saved;}catch(_){}
+    document.getElementById('btn-save').onclick=()=>{localStorage.setItem('cryptoDash.endpoint',ep.value||'');alert('Gespeichert.');};
+    document.getElementById('btn-fetch').onclick=()=>{if(!ep.value)return alert('Bitte Endpoint-URL eintragen.');localStorage.setItem('cryptoDash.endpoint',ep.value);doFetch(ep.value);};
 
-    document.getElementById('btn-demo').onclick = () => { render(DEMO); };
-
-    document.getElementById('btn-filldemo').onclick = () => {
-      document.getElementById('manualjson').value = JSON.stringify(DEMO, null, 2);
-    };
-
-    document.getElementById('btn-apply').onclick = () => {
-      const raw=document.getElementById('manualjson').value;
-      try { render(JSON.parse(raw)); } catch(e){ alert('Ungültiges JSON: '+e); }
-    };
-
-    const ep = document.getElementById('endpoint');
-    try {
-      const saved = localStorage.getItem('cryptoDash.endpoint');
-      if (saved) ep.value = saved;
-    } catch(_) {}
-
-    document.getElementById('btn-save').onclick = () => {
-      localStorage.setItem('cryptoDash.endpoint', ep.value||'');
-      alert('Gespeichert.');
-    };
-
-    document.getElementById('btn-fetch').onclick = () => {
-      if (!ep.value) return alert('Bitte Endpoint-URL eintragen.');
-      localStorage.setItem('cryptoDash.endpoint', ep.value);
-      doFetch(ep.value);
-    };
-
-    // Beim ersten Laden: falls Endpoint gespeichert → automatisch fetchen, sonst Demo
+    // Initial laden
     (function init(){
-      const saved = localStorage.getItem('cryptoDash.endpoint');
-      if (saved) { ep.value = saved; doFetch(saved); }
-      else { render(DEMO); }
+      const saved=localStorage.getItem('cryptoDash.endpoint');
+      if(saved){ep.value=saved;doFetch(saved);} else {render(DEMO);}
     })();
 
-    // Bei Rückkehr in den Tab oder wenn wieder online → erneut fetchen
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        const saved = localStorage.getItem('cryptoDash.endpoint');
-        if (saved) doFetch(saved);
-      }
-    });
-    window.addEventListener('online', () => {
-      const saved = localStorage.getItem('cryptoDash.endpoint');
-      if (saved) doFetch(saved);
-    });
+    // Re-Draw der Charts bei Resize + Re-Fetch bei Sichtbarkeit/Online
+    window.addEventListener('resize', ()=>{ if(LAST){ drawSpark('btc-chart', LAST.btc?.spark, getComputedStyle(document.documentElement).getPropertyValue('--btc').trim()); drawSpark('kas-chart', LAST.kas?.spark, getComputedStyle(document.documentElement).getPropertyValue('--kas').trim()); }});
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){const s=localStorage.getItem('cryptoDash.endpoint');if(s)doFetch(s);}});
+    window.addEventListener('online',()=>{const s=localStorage.getItem('cryptoDash.endpoint');if(s)doFetch(s);});
 
-    // Service Worker registrieren
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').catch(()=>{});
-    }
+    // Service Worker
+    if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
   </script>
 </body>
 </html>
