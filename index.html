@@ -32,7 +32,6 @@
     .kv{font-size:.95rem;margin:4px 0}
     .muted{color:var(--muted)}
     .price{font-size:1.4rem;font-weight:700}
-    .delta.up{color:#059669}.delta.down{color:#dc2626}
     .grid4{display:grid;grid-template-columns:1fr;gap:12px}
     @media(min-width:1024px){.grid4{grid-template-columns:repeat(4,1fr)}}
     .status-card{border:1px solid var(--border);border-radius:12px;padding:10px}
@@ -55,17 +54,27 @@
     .footer{margin:18px 0;color:var(--muted);font-size:12px}
     .link-small{font-size:12px;color:var(--blue);text-decoration:none}
     .link-small:hover{text-decoration:underline}
-    /* Charts */
-    .spark{width:100%;height:88px;display:block;margin-top:8px}
-    @media(min-width:768px){.spark{height:110px}}
-    .chart-note{margin-top:4px;color:#94a3b8;font-size:11px}
-    /* Tabs */
+
+    /* KPIs statt Dauer-Linien */
+    .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+    .badge{border:1px solid var(--border);border-radius:999px;padding:3px 8px;font-size:12px}
+    .badge.up{background:#ecfdf5;color:#065f46}
+    .badge.down{background:#fee2e2;color:#991b1b}
+
+    .range{margin-top:8px}
+    .range-head{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#64748b}
+    .rangebar{position:relative;height:10px;background:#e5e7eb;border-radius:999px;margin-top:4px}
+    .rangemark{position:absolute;top:-3px;width:2px;height:16px;background:#0ea5e9}
+    .rangemark.btc{background:var(--btc)}
+    .rangemark.kas{background:var(--kas)}
+
+    /* Optionaler Minichart (Details) */
+    .spark{width:100%;height:90px;display:block;margin-top:8px}
     .tabs{display:inline-flex;border:1px solid var(--border);border-radius:999px;overflow:hidden}
     .tab{appearance:none;border:0;margin:0;padding:6px 10px;background:#fff;color:#334155;cursor:pointer;font-size:12px}
     .tab+ .tab{border-left:1px solid var(--border)}
     .tab.active{background:var(--blue);color:#fff}
-    .tag{display:inline-flex;align-items:center;padding:2px 6px;border-radius:999px;font-size:11px;font-weight:600}
-    .tag.high{background:#fee2e2;color:#991b1b}.tag.med{background:#fffbeb;color:#92400e}.tag.low{background:#d1fae5;color:#065f46}
+
     /* News */
     ul.news{list-style:none;margin:0;padding:0}
     .news li{border:1px solid var(--border);border-radius:12px;padding:10px;margin:10px 0;background:#fafafa}
@@ -83,7 +92,7 @@
       </div>
       <div class="right">
         <button class="btn" id="btn-demo">Demo laden</button>
-        <!-- Settings-Button standardmäßig versteckt (Admin: ?setup=1) -->
+        <!-- Settings-Button standardmäßig versteckt (Admin via ?setup=1) -->
         <button class="btn" id="btn-settings" style="display:none">Einstellungen</button>
       </div>
     </div>
@@ -123,15 +132,27 @@
           </div>
         </div>
         <div class="cnt">
-          <div class="flex">
-            <div>
-              <div class="price" id="btc-price">$–</div>
-              <div class="small" id="btc-delta"></div>
+          <div class="price" id="btc-price">$–</div>
+          <div class="badges" id="btc-badges"></div>
+
+          <div class="range" id="btc-range">
+            <div class="range-head">
+              <span id="btc-range-low">Low: –</span>
+              <span>30-Tage-Spanne</span>
+              <span id="btc-range-high">High: –</span>
             </div>
-            <div class="small muted" id="etf"></div>
+            <div class="rangebar">
+              <div class="rangemark btc" id="btc-range-mark" style="left:0%"></div>
+            </div>
           </div>
-          <canvas class="spark" id="btc-chart"></canvas>
-          <div class="chart-note" id="btc-chart-note"></div>
+
+          <div class="small muted" id="btc-etf"></div>
+
+          <details style="margin-top:8px;">
+            <summary class="small">Minichart (optional)</summary>
+            <canvas class="spark" id="btc-chart"></canvas>
+          </details>
+
           <div class="sources" id="btc-sources"></div>
         </div>
       </div>
@@ -149,9 +170,24 @@
         </div>
         <div class="cnt">
           <div class="price" id="kas-price">$–</div>
-          <div class="small" id="kas-delta"></div>
-          <canvas class="spark" id="kas-chart"></canvas>
-          <div class="chart-note" id="kas-chart-note"></div>
+          <div class="badges" id="kas-badges"></div>
+
+          <div class="range" id="kas-range">
+            <div class="range-head">
+              <span id="kas-range-low">Low: –</span>
+              <span>30-Tage-Spanne</span>
+              <span id="kas-range-high">High: –</span>
+            </div>
+            <div class="rangebar">
+              <div class="rangemark kas" id="kas-range-mark" style="left:0%"></div>
+            </div>
+          </div>
+
+          <details style="margin-top:8px;">
+            <summary class="small">Minichart (optional)</summary>
+            <canvas class="spark" id="kas-chart"></canvas>
+          </details>
+
           <div class="sources" id="kas-sources"></div>
         </div>
       </div>
@@ -224,12 +260,12 @@
   </div>
 
   <script>
-    /* ---------- Demo-Daten (inkl. Tabs & News) ---------- */
+    /* ---------- Demo-Daten (kompakt) ---------- */
     const DEMO = {
       "generated_at": new Date().toISOString(),
       "tldr":{"headline":"Neutral → leicht risk-on: Märkte preisen Sept-Senkung ein; ETF-Zuflüsse positiv.","stance":"Neutral"},
       "macro":{"cpi_yoy":2.7,"cpi_month":"Juli 2025","pce_date":"2025-08-29","fomc_next":"16.–17.09.2025","fedwatch_comment":"Futures implizieren hohe Chance auf −25 bp im September.","sources":["BLS","CME FedWatch","Federal Reserve"]},
-      "btc":{"price":117651,"ch24":-1.17,"spark":{"24h":[118900,118520,118360,118050,117900,117780,117720,117651],"7d":[119500,118700,118300,118800,117900,117700,117651],"1m":[116000,119000,118200,117800,118400,117651],"1y":[43000,52000,61000,70000,76000,68000,75000,82000,77000,90000,98000,117651]},"etf_flows_comment":"+114 Mio (15.08) · +524 Mio (14.08) laut Farside","sources":["Farside Investors","CME BTC Futures"]},
+      "btc":{"price":117651,"ch24":-1.17,"spark":{"24h":[118900,118520,118360,118050,117900,117780,117720,117651],"7d":[119500,118700,118300,118800,117900,117700,117651],"1m":[116000,119000,118200,117800,118400,117651],"1y":[43000,52000,61000,70000,76000,68000,75000,82000,77000,90000,98000,117651]},"etf":{"yesterday":114000000,"yesterday_date":"2025-08-15","sum5d":638000000,"source":"Farside Investors"},"sources":["Farside Investors","CME BTC Futures"]},
       "kas":{"price":0.0902,"ch24":-2.04,"spark":{"24h":[0.0915,0.0912,0.0910,0.0908,0.0906,0.0904,0.0903,0.0902],"7d":[0.093,0.0923,0.0918,0.0912,0.0909,0.0906,0.0902],"1m":[0.088,0.091,0.0895,0.0900,0.0907,0.0902],"1y":[0.036,0.045,0.055,0.062,0.070,0.065,0.078,0.082,0.089,0.094,0.092,0.0902]},"sources":["CoinMarketCap"]},
       "peak":{"mvrv":{"status":"elevated"},"puell":{"status":"neutral"},"rhodl":{"status":"elevated"},"sopr":{"status":"elevated"},"funding":{"status":"elevated"},"oi":{"status":"elevated"},"miner":{"status":"neutral"},"trends":{"status":"neutral"},"sources":["LookIntoBitcoin","Coinglass","Google Trends"]},
       "calendar":{"items":[
@@ -237,149 +273,114 @@
         {"date":"2025-08-29","title":"US PCE (Juli)","impact":"high","desc":"Bevorzugtes Inflationsmaß der Fed.","source":"BEA","link":"https://www.bea.gov/"},
         {"date":"2025-09-11","title":"US CPI (August)","impact":"high","desc":"Kern- und Gesamtinflation.","source":"BLS","link":"https://www.bls.gov/"}
       ],"sources":["BLS","BEA","Federal Reserve"]},
-      "news":{
-        "items":[
-          {"title":"BTC hält wichtige Unterstützung – Derivate signalisieren Risikoappetit","source":"The Block","time":"2025-08-16T09:20:00Z","tickers":["BTC"],"summary":"Perpetual Funding leicht positiv; Open Interest über 30T-Durchschnitt – erhöhtes Risiko, aber kein Extrem.","url":"https://example.com/news1"},
-          {"title":"Kaspa integriert neuen Mining-Client","source":"Kaspa Core","time":"2025-08-15T18:05:00Z","tickers":["KAS"],"summary":"Leistungsverbesserungen und stabilere Hashrate; kurzfristig neutral, mittelfristig positiv.","url":"https://example.com/news2"},
-          {"title":"Fedwatch: 25bp-Senkung im September eingepreist","source":"CME","time":"2025-08-16T07:55:00Z","tickers":["MACRO"],"summary":"Zinssenkungschance weiter hoch; CPI-Pfad bleibt entscheidend.","url":"https://example.com/news3"}
-        ],
-        "sources":["CME","The Block","Projektfeeds / n8n"]
-      }
+      "news":{"items":[
+        {"title":"BTC hält wichtige Unterstützung – Derivate signalisieren Risikoappetit","source":"The Block","time":"2025-08-16T09:20:00Z","tickers":["BTC"],"summary":"Perpetual Funding leicht positiv; Open Interest über 30T-Durchschnitt – erhöhtes Risiko, aber kein Extrem.","url":"https://example.com/news1"},
+        {"title":"Kaspa integriert neuen Mining-Client","source":"Kaspa Core","time":"2025-08-15T18:05:00Z","tickers":["KAS"],"summary":"Leistungsverbesserungen und stabilere Hashrate; kurzfristig neutral, mittelfristig positiv.","url":"https://example.com/news2"}
+      ],"sources":["CME","The Block","Projektfeeds / n8n"]}
     };
 
     /* ---------- Helpers ---------- */
+    const TF_STATE={btc:'24h', kas:'24h'};
+    const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+    const fmtUSD = (n, d=0) => n==null ? '–' : (n>=1000 ? '$'+n.toLocaleString() : '$'+n.toFixed(d));
+    function parseAnyDate(x){ if(x==null) return null; if(typeof x==='number'){const d=new Date(x);return isNaN(d)?null:d;} const s=String(x).trim(); let d=new Date(s); if(!isNaN(d)) return d; if(/^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}/.test(s)){d=new Date(s.replace(' ','T')); if(!isNaN(d)) return d;} const m=s.match(/^(\d{2})\.(\d{2})\.(\d{4})(?:\s+(\d{2}):(\d{2}))?/); if(m){const[_,dd,mm,yy,hh='00',mi='00']=m; d=new Date(`${yy}-${mm}-${dd}T${hh}:${mi}:00`); if(!isNaN(d)) return d;} return null; }
+    function scoreLight(total){return total<3?'green':(total<=6?'yellow':'red');}
+    function seriesFrom(asset,tf){const a=LAST?.[asset]; if(!a) return null; if(Array.isArray(a.spark)) return (tf==='24h')?a.spark.map(v=>({v})) : null; const arr=(a.spark||{})[tf]||(a.spark||{})[tf.toLowerCase()]; return arr?arr.map(v=>({v})) : null;}
+    function pctFromSeries(arr){ if(!arr || arr.length<2) return null; const a=arr[0], b=arr[arr.length-1]; if(a===0) return null; return (b/a-1)*100; }
+    function minmaxFrom(arr){ if(!arr || !arr.length) return null; let mn=+Infinity,mx=-Infinity; for(const v of arr){ if(v<mn) mn=v; if(v>mx) mx=v; } return {min:mn,max:mx}; }
+    function drawSpark(id, points, color){ const cv=document.getElementById(id); if(!cv) return; if(!points||points.length<2){cv.classList.add('hidden');return} cv.classList.remove('hidden'); const dpr=window.devicePixelRatio||1; const W=(cv.clientWidth||320), H=90; cv.width=Math.floor(W*dpr); cv.height=Math.floor(H*dpr); cv.style.width=W+'px'; cv.style.height=H+'px'; const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H); const vals=points.map(p=>+p.v); const min=Math.min(...vals), max=Math.max(...vals); const pad=6, n=vals.length, step=W/(n-1); ctx.lineWidth=2; ctx.strokeStyle=color||'#0ea5e9'; ctx.beginPath(); for(let i=0;i<n;i++){ const x=i*step; const y=H-((vals[i]-min)/(max-min||1))*(H-pad*2)-pad; if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.stroke(); }
+
+    /* ---------- Risiko ---------- */
     const weights={mvrv:1.5,puell:1.0,rhodl:1.2,sopr:0.8,funding:0.8,oi:1.0,miner:0.7,trends:0.6};
     const scoreFor=s=>s==='overheated'?2:(s==='elevated'?1:0);
+    function riskScore(p){if(!p)return{total:0,light:'green'};const t=scoreFor(p.mvrv?.status)*weights.mvrv+scoreFor(p.puell?.status)*weights.puell+scoreFor(p.rhodl?.status)*weights.rhodl+scoreFor(p.sopr?.status)*weights.sopr+scoreFor(p.funding?.status)*weights.funding+scoreFor(p.oi?.status)*weights.oi+scoreFor(p.miner?.status)*weights.miner+scoreFor(p.trends?.status)*weights.trends;return{total:Number(t.toFixed(1)),light:scoreLight(t)}}
+
     let LAST=null;
-    const TF_STATE={btc:'24h', kas:'24h'};
 
-    function parseAnyDate(x){
-      if(x==null) return null;
-      if(typeof x==='number'){const d=new Date(x);return isNaN(d)?null:d;}
-      let s=String(x).trim();
-      let d=new Date(s); if(!isNaN(d)) return d;
-      if(/^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}/.test(s)){d=new Date(s.replace(' ','T')); if(!isNaN(d)) return d;}
-      const m=s.match(/^(\d{2})\.(\d{2})\.(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
-      if(m){const[_,dd,mm,yy,hh='00',mi='00']=m; d=new Date(`${yy}-${mm}-${dd}T${hh}:${mi}:00`); if(!isNaN(d)) return d;}
-      return null;
-    }
-    const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
-
-    function riskScore(p){if(!p)return{total:0,light:'green'};const t=scoreFor(p.mvrv?.status)*weights.mvrv+scoreFor(p.puell?.status)*weights.puell+scoreFor(p.rhodl?.status)*weights.rhodl+scoreFor(p.sopr?.status)*weights.sopr+scoreFor(p.funding?.status)*weights.funding+scoreFor(p.oi?.status)*weights.oi+scoreFor(p.miner?.status)*weights.miner+scoreFor(p.trends?.status)*weights.trends;return{total:Number(t.toFixed(1)),light:t<3?'green':(t<=6?'yellow':'red')}}
-    function setText(id,val){const el=document.getElementById(id);if(el)el.textContent=(val??'')}
-    function renderSources(id,arr){const el=document.getElementById(id);if(!el)return;el.textContent=(arr&&arr.length)?('Quellen: '+arr.join(', ')):''}
-
-    // Gibt Werte für den aktiven Timeframe zurück
-    function seriesFrom(asset,tf){
-      const a=LAST?.[asset]; if(!a) return null;
-      if(Array.isArray(a.spark)) return (tf==='24h') ? a.spark.map(v=>({v})) : null;
-      const raw=(a.spark||{})[tf] || (a.spark||{})[tf.toLowerCase()];
-      return raw ? raw.map(v=>({v})) : null;
+    function renderBadges(asset){
+      const el=document.getElementById(asset+'-badges'); if(!el) return;
+      const frames=[['24h','24h'],['7d','7T'],['1m','1M'],['1y','1J']];
+      el.innerHTML=frames.map(([tf,label])=>{
+        const s=seriesFrom(asset,tf); const arr=s?s.map(p=>p.v):null; const pct=pctFromSeries(arr);
+        if(pct==null) return `<span class="badge">${label} –</span>`;
+        const cls=pct>=0?'up':'down'; const sign=pct>=0?'+':'';
+        return `<span class="badge ${cls}">${label} ${sign}${pct.toFixed(2)}%</span>`;
+      }).join('');
     }
 
-    // Sparkline mit Auto-Zoom (%-Skalierung bei sehr kleinen Schwankungen)
-    function drawSpark(id, points, color, opts={}){
-      const cv=document.getElementById(id); if(!cv) return;
-      const noteEl = opts.noteId ? document.getElementById(opts.noteId) : null;
-      if(!points || points.length<2){cv.classList.add('hidden'); if(noteEl) noteEl.textContent=''; return}
-      cv.classList.remove('hidden');
-
-      // Originalwerte
-      const values = points.map(p=>Number(p.v));
-      const vMin = Math.min(...values), vMax = Math.max(...values);
-      const vMid = (vMin+vMax)/2, vRange = Math.max(1e-12, vMax-vMin);
-      const relRange = vRange / Math.max(1e-9, Math.abs(vMid)); // Verhältnisänderung
-
-      // Auto-Entscheidung: wenn <0,4% Bewegung → %-Skalierung (Auto-Zoom)
-      const usePercent = (!isFinite(relRange) || relRange < 0.004);
-
-      // Daten für Zeichnung vorbereiten
-      const data = usePercent
-        ? values.map(v => (v/values[0]-1)*100)   // %Δ zum ersten Punkt
-        : values.slice();
-
-      // Canvas Maße (HiDPI)
-      const dpr=window.devicePixelRatio||1;
-      const parentW=cv.clientWidth||cv.parentElement.clientWidth||320;
-      const W=Math.max(160,parentW), H=parseInt(getComputedStyle(cv).height)||90;
-      cv.width=Math.floor(W*dpr); cv.height=Math.floor(H*dpr);
-      cv.style.width=W+'px'; cv.style.height=H+'px';
-      const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
-      ctx.clearRect(0,0,W,H);
-
-      // Skala mit Headroom
-      let min=Math.min(...data), max=Math.max(...data);
-      if(min===max){min-=1; max+=1;}
-      const head = (max-min)*0.15; min-=head; max+=head;
-
-      const pad=6, n=data.length, step=W/(n-1||1);
-
-      // (Optional) Null-Linie bei %-Skalierung
-      if(usePercent && min<0 && max>0){
-        const y0 = H - ((0-min)/(max-min))*(H-pad*2) - pad;
-        ctx.strokeStyle='rgba(148,163,184,.6)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
-        ctx.beginPath(); ctx.moveTo(0,y0); ctx.lineTo(W,y0); ctx.stroke(); ctx.setLineDash([]);
-      }
-
-      // Linie
-      ctx.lineWidth=2; ctx.strokeStyle=color||'#0ea5e9';
-      ctx.beginPath();
-      for(let i=0;i<n;i++){
-        const x=i*step;
-        const y=H - ((data[i]-min)/(max-min))*(H-pad*2) - pad;
-        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-      }
-      ctx.stroke();
-
-      // Letzten Punkt markieren
-      const xLast=(n-1)*step;
-      const yLast=H - ((data[n-1]-min)/(max-min))*(H-pad*2) - pad;
-      ctx.fillStyle=color||'#0ea5e9';
-      ctx.beginPath(); ctx.arc(xLast,yLast,2.5,0,Math.PI*2); ctx.fill();
-
-      // Hinweistext
-      if(noteEl){
-        noteEl.textContent = usePercent ? 'Skalierung: %-Change (Auto-Zoom)'
-                                        : 'Skalierung: Preis';
-      }
+    function renderRange(asset, current){
+      // 30-Tage (1M) sonst 7d
+      const pref=seriesFrom(asset,'1m')?.map(p=>p.v) || seriesFrom(asset,'7d')?.map(p=>p.v);
+      const box=document.getElementById(asset+'-range'); if(!box) return;
+      const lowEl=document.getElementById(asset+'-range-low');
+      const highEl=document.getElementById(asset+'-range-high');
+      const mark=document.getElementById(asset+'-range-mark');
+      if(!pref || pref.length<2){ box.classList.add('hidden'); return; }
+      const mm=minmaxFrom(pref); if(!mm){box.classList.add('hidden'); return;}
+      box.classList.remove('hidden');
+      lowEl.textContent = 'Low: ' + (asset==='kas' ? '$'+(+mm.min).toFixed(4) : '$'+Math.round(mm.min).toLocaleString());
+      highEl.textContent = 'High: ' + (asset==='kas' ? '$'+(+mm.max).toFixed(4) : '$'+Math.round(mm.max).toLocaleString());
+      const pct = clamp(((current - mm.min) / Math.max(1e-9, mm.max - mm.min)) * 100, 0, 100);
+      mark.style.left = pct + '%';
     }
 
-    /* ---------- Render ---------- */
+    function renderSources(id,arr){const el=document.getElementById(id); if(!el) return; el.textContent=(arr&&arr.length)?('Quellen: '+arr.join(', ')):''}
+
+    /* ---------- Haupt-Render ---------- */
     function render(data){
       LAST=data;
 
+      // Zeitpunkt
       const dt=parseAnyDate(data.generated_at);
-      setText('last-upd','Letztes Update: '+(dt?dt.toLocaleString():'–'));
+      document.getElementById('last-upd').textContent = 'Letztes Update: ' + (dt?dt.toLocaleString():'–');
 
+      // TL;DR
       const stance=(data.tldr?.stance||'Neutral').toLowerCase();
       const stanceEl=document.getElementById('stance');
       stanceEl.className='tldr-stance '+(stance==='bullish'?'bullish':(stance==='bearish'?'bearish':'neutral'));
-      setText('stance',data.tldr?.stance||'Neutral');
-      setText('headline',data.tldr?.headline||'');
+      stanceEl.textContent=data.tldr?.stance||'Neutral';
+      document.getElementById('headline').textContent=data.tldr?.headline||'';
 
-      setText('cpi',(data.macro?.cpi_yoy!=null)?(data.macro.cpi_yoy.toFixed(1)+' %'):'–');
-      setText('cpimonth',data.macro?.cpi_month?'('+data.macro.cpi_month+')':'');
-      setText('fomc',data.macro?.fomc_next||'–');
-      setText('pce',data.macro?.pce_date||'–');
-      setText('fedwatch',data.macro?.fedwatch_comment||'');
-      renderSources('macro-sources',data.macro?.sources||[]);
+      // Macro
+      document.getElementById('cpi').textContent = (data.macro?.cpi_yoy!=null)?(data.macro.cpi_yoy.toFixed(1)+' %'):'–';
+      document.getElementById('cpimonth').textContent = data.macro?.cpi_month?`(${data.macro.cpi_month})`:'';
+      document.getElementById('fomc').textContent = data.macro?.fomc_next||'–';
+      document.getElementById('pce').textContent = data.macro?.pce_date||'–';
+      document.getElementById('fedwatch').textContent = data.macro?.fedwatch_comment||'';
+      renderSources('macro-sources', data.macro?.sources||[]);
 
-      setText('btc-price',data.btc?.price!=null?'$'+data.btc.price.toLocaleString():'$–');
-      const bd=document.getElementById('btc-delta');
-      if(bd && data.btc?.ch24!=null){bd.textContent=(data.btc.ch24>=0?'+':'')+data.btc.ch24.toFixed(2)+'% / 24h'; bd.className='small '+(data.btc.ch24>=0?'delta up':'delta down');}
-      setText('etf',data.btc?.etf_flows_comment||''); renderSources('btc-sources',data.btc?.sources||[]);
-
-      setText('kas-price',data.kas?.price!=null?'$'+(Math.round(data.kas.price*10000)/10000).toFixed(4):'$–');
-      const kd=document.getElementById('kas-delta');
-      if(kd && data.kas?.ch24!=null){kd.textContent=(data.kas.ch24>=0?'+':'')+data.kas.ch24.toFixed(2)+'% / 24h'; kd.className='small '+(data.kas.ch24>=0?'delta up':'delta down');}
-      renderSources('kas-sources',data.kas?.sources||[]);
-
-      // Charts mit Auto-Zoom
+      // BTC
+      const btcP = data.btc?.price;
+      document.getElementById('btc-price').textContent = btcP!=null ? '$'+btcP.toLocaleString() : '$–';
+      renderBadges('btc');
+      renderRange('btc', btcP||0);
+      // ETF-Flows mit Kontext
+      const etfNode=document.getElementById('btc-etf');
+      if(data.btc?.etf?.yesterday && data.btc?.etf?.sum5d){
+        const d = parseAnyDate(data.btc.etf.yesterday_date);
+        const dStr = d ? new Date(d).toLocaleDateString() : 'gestern';
+        const m = (n)=> (n>=0?'+':'') + (n/1e6).toFixed(0) + ' Mio';
+        etfNode.textContent = `Spot-ETF-Zuflüsse: ${m(data.btc.etf.yesterday)} (${dStr}); 5-Tage-Summe: ${m(data.btc.etf.sum5d)} · Quelle: ${data.btc.etf.source||'-'}`;
+      } else if (data.btc?.etf_flows_comment){
+        etfNode.textContent = data.btc.etf_flows_comment;
+      } else {
+        etfNode.textContent = '';
+      }
+      renderSources('btc-sources', data.btc?.sources||[]);
+      // Optionaler Chart
       const btcColor=getComputedStyle(document.documentElement).getPropertyValue('--btc').trim();
-      const kasColor=getComputedStyle(document.documentElement).getPropertyValue('--kas').trim();
-      drawSpark('btc-chart', seriesFrom('btc', TF_STATE.btc), btcColor, {noteId:'btc-chart-note'});
-      drawSpark('kas-chart', seriesFrom('kas', TF_STATE.kas), kasColor, {noteId:'kas-chart-note'});
+      drawSpark('btc-chart', seriesFrom('btc', TF_STATE.btc), btcColor);
 
+      // KAS
+      const kasP = data.kas?.price;
+      document.getElementById('kas-price').textContent = kasP!=null ? '$'+Number(kasP).toFixed(4) : '$–';
+      renderBadges('kas');
+      renderRange('kas', +kasP||0);
+      renderSources('kas-sources', data.kas?.sources||[]);
+      const kasColor=getComputedStyle(document.documentElement).getPropertyValue('--kas').trim();
+      drawSpark('kas-chart', seriesFrom('kas', TF_STATE.kas), kasColor);
+
+      // Peak-Watch
       const grid=document.getElementById('peak-grid');
       if(grid){
         const map=[['mvrv','MVRV Z-Score'],['puell','Puell Multiple'],['rhodl','RHODL Ratio'],['sopr','SOPR'],['funding','Funding-Rate'],['oi','Open Interest'],['miner','Miner-Flows'],['trends','Google Trends']];
@@ -390,11 +391,12 @@
           return `<div class="status-card"><div class="flex"><div class="kv" style="font-weight:600;">${label}</div><span class="${cls}">${lbl}</span></div>${it.note?`<div class="small muted" style="margin-top:6px;">${it.note}</div>`:''}</div>`;
         }).join('');
       }
-      renderSources('peak-sources',data.peak?.sources||[]);
+      renderSources('peak-sources', data.peak?.sources||[]);
 
+      // Risiko-Ampel
       const r=riskScore(data.peak||{});
-      setText('risk-score','Score: '+r.total);
-      setText('risk-label',r.light==='green'?'🟢 Niedrig':(r.light==='yellow'?'🟡 Moderat':'🔴 Hoch'));
+      document.getElementById('risk-score').textContent = 'Score: '+r.total;
+      document.getElementById('risk-label').textContent = r.light==='green'?'🟢 Niedrig':(r.light==='yellow'?'🟡 Moderat':'🔴 Hoch');
       const fill=document.getElementById('riskbar-fill');
       if(fill){
         let pct=0;
@@ -410,8 +412,8 @@
       if(ul){
         ul.innerHTML=(data.calendar?.items||[]).map(it=>{
           const impact=it.impact==='high'?'high':(it.impact==='medium'?'med':(it.impact==='med'?'med':'low'));
-          const impactLabel=impact==='high'?'Hoch':(impact==='med'?'Mittel':'Niedrig');
-          const pill=it.impact?`<span class="tag ${impact}">${impactLabel}</span>`:'';
+          const lbl=impact==='high'?'Hoch':(impact==='med'?'Mittel':'Niedrig');
+          const pill=`<span class="pill ${impact==='high'?'overheated':impact==='med'?'elevated':'neutral'}">${lbl}</span>`;
           const summary=`<b>${it.date}</b> — ${it.title} ${pill}`;
           const body=(it.desc||it.link||it.source)
             ? `<div class="small" style="margin-top:6px;">${it.desc?it.desc:''} ${it.link?`<a class="link-small" href="${it.link}" target="_blank" rel="noopener">Mehr ↗</a>`:''} ${it.source?`<span class="muted">(${it.source})</span>`:''}</div>`
@@ -419,15 +421,15 @@
           return `<li><details><summary>${summary}</summary>${body}</details></li>`;
         }).join('');
       }
-      renderSources('cal-sources',data.calendar?.sources||[]);
+      renderSources('cal-sources', data.calendar?.sources||[]);
 
-      // Newsfeed
+      // News
       const nl=document.getElementById('news-list');
       if(nl){
         const items=(data.news?.items||[]).slice(0,20);
         nl.innerHTML=items.map(n=>{
           const t=parseAnyDate(n.time); const when=t?t.toLocaleString():'';
-          const tick=(n.tickers||[]).map(x=>`<span class="tag ${x==='BTC'?'high':(x==='KAS'?'med':'low')}">${x}</span>`).join(' ');
+          const tick=(n.tickers||[]).map(x=>`<span class="badge">${x}</span>`).join(' ');
           const sum=(n.summary||'').toString();
           const short=sum.length>240 ? sum.slice(0,240)+'…' : sum;
           return `<li>
@@ -437,7 +439,7 @@
           </li>`;
         }).join('');
       }
-      renderSources('news-sources',data.news?.sources||[]);
+      renderSources('news-sources', data.news?.sources||[]);
     }
 
     /* ---------- Fetch ---------- */
@@ -450,7 +452,7 @@
       }catch(e){ console.warn('Fetch-Fehler:',e); }
     }
 
-    /* ---------- UI & Admin ---------- */
+    /* ---------- UI / Admin ---------- */
     const settings=document.getElementById('settings');
     document.getElementById('btn-demo').onclick=()=>{render(DEMO);};
     document.getElementById('btn-filldemo')?.addEventListener('click',()=>{document.getElementById('manualjson').value=JSON.stringify(DEMO,null,2);});
@@ -468,7 +470,7 @@
     }
     function isAdmin(){return localStorage.getItem('cryptoDash.admin')==='1';}
 
-    // Tabs
+    // Tabs: nur Chart umschalten (Badges/Range sind timeframe-unabhängig)
     function bindTabs(){
       document.querySelectorAll('.tabs').forEach(group=>{
         group.addEventListener('click',(e)=>{
@@ -478,16 +480,14 @@
           group.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b===btn));
           if(LAST){
             const color=asset==='btc'?getComputedStyle(document.documentElement).getPropertyValue('--btc').trim():getComputedStyle(document.documentElement).getPropertyValue('--kas').trim();
-            drawSpark(asset+'-chart',seriesFrom(asset,tf),color,{noteId:asset+'-chart-note'});
+            drawSpark(asset+'-chart', seriesFrom(asset, tf), color);
           }
         });
       });
     }
 
-    // Init
     (function init(){
       bindTabs();
-      const saved=localStorage.getItem('cryptoDash.endpoint');
       setAdminFromURL();
       if(isAdmin()){
         document.getElementById('btn-settings').style.display='inline-flex';
@@ -495,15 +495,13 @@
           settings.classList.remove('hidden');
         }
       }
+      const saved=localStorage.getItem('cryptoDash.endpoint');
       if(saved){ep.value=saved;doFetch(saved);} else {render(DEMO);}
     })();
 
-    // Redraw bei Resize / Re-Fetch bei Sichtbarkeit & Online
     window.addEventListener('resize',()=>{ if(LAST){ 
-      const btcColor=getComputedStyle(document.documentElement).getPropertyValue('--btc').trim();
-      const kasColor=getComputedStyle(document.documentElement).getPropertyValue('--kas').trim();
-      drawSpark('btc-chart',seriesFrom('btc',TF_STATE.btc),btcColor,{noteId:'btc-chart-note'});
-      drawSpark('kas-chart',seriesFrom('kas',TF_STATE.kas),kasColor,{noteId:'kas-chart-note'});
+      drawSpark('btc-chart', seriesFrom('btc', TF_STATE.btc), getComputedStyle(document.documentElement).getPropertyValue('--btc').trim());
+      drawSpark('kas-chart', seriesFrom('kas', TF_STATE.kas), getComputedStyle(document.documentElement).getPropertyValue('--kas').trim());
     }});
     document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){const s=localStorage.getItem('cryptoDash.endpoint');if(s)doFetch(s);}});
     window.addEventListener('online',()=>{const s=localStorage.getItem('cryptoDash.endpoint');if(s)doFetch(s);});
