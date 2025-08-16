@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Krypto-Dashboard · FED · BTC · KAS · Risiko-Ampel</title>
+  <meta name="theme-color" content="#0f172a">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --muted: #64748b;
+      --text: #0f172a;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --border: #e2e8f0;
+      --ring: #94a3b8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(to bottom, #f8fafc, #ffffff);
+      color: var(--text);
+    }
+    .container { max-width: 1120px; margin: 0 auto; padding: 16px; }
+    h1 { font-size: 1.375rem; margin: 0 0 4px 0; }
+    .sub { color: var(--muted); font-size: 0.875rem; }
+    .row { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 768px) {
+      .row-2 { grid-template-columns: 1fr 1fr; }
+      .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .card h2 { font-size: 1rem; margin: 0; display:flex; align-items:center; gap:8px; }
+    .card .hdr { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+    .card .cnt { padding: 12px 16px; }
+    .pill { display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:3px 8px; font-size: 12px; font-weight: 600; }
+    .pill.neutral { background:#d1fae5; color:#065f46; }
+    .pill.elevated { background:#fffbeb; color:#92400e; }
+    .pill.overheated { background:#fee2e2; color:#991b1b; }
+    .tldr-stance.neutral { color:#475569; }
+    .tldr-stance.bullish { color:#059669; }
+    .tldr-stance.bearish { color:#dc2626; }
+    .kv { font-size: 0.95rem; margin: 4px 0; }
+    .muted { color: var(--muted); }
+    .price { font-size: 1.4rem; font-weight: 700; }
+    .delta.up { color: #059669; }
+    .delta.down { color: #dc2626; }
+    .grid4 { display:grid; grid-template-columns: 1fr; gap:12px; }
+    @media (min-width: 1024px) { .grid4 { grid-template-columns: repeat(4, 1fr); } }
+    .status-card { border:1px solid var(--border); border-radius:12px; padding:10px; }
+    .riskbar { height: 8px; width: 100%; background:#e5e7eb; border-radius:999px; overflow:hidden; }
+    .riskbar > div { height:100%; }
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:10px; border:1px solid var(--border); background:#fff; }
+    .btn.primary { background:#0ea5e9; color:#fff; border-color:#0ea5e9; }
+    .controls { display:grid; gap:10px; }
+    input[type="text"], textarea {
+      width: 100%; padding:10px; border-radius:10px; border:1px solid var(--border); outline:none;
+    }
+    input:focus, textarea:focus { border-color: var(--ring); }
+    ul.cal { list-style: disc inside; padding-left: 18px; }
+    .sources { margin-top: 8px; color: var(--muted); font-size: 12px; }
+    .flex { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .right {}
+    .small { font-size: 12px; }
+    .hidden { display:none; }
+    .footer { margin:18px 0; color:var(--muted); font-size:12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="flex">
+      <div>
+        <h1>Krypto‑Dashboard <span class="muted">· FED · BTC · KAS · Risiko‑Ampel</span></h1>
+        <div class="sub" id="last-upd">Letztes Update: –</div>
+      </div>
+      <div class="right">
+        <button class="btn" id="btn-demo">Demo laden</button>
+        <button class="btn" id="btn-settings">Einstellungen</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="hdr"><h2>TL;DR <span class="tldr-stance neutral" id="stance"></span></h2></div>
+      <div class="cnt"><div id="headline" class="kv"></div></div>
+    </div>
+
+    <div class="row row-3" style="margin-top:16px;">
+      <div class="card">
+        <div class="hdr"><h2>FED / Makro</h2></div>
+        <div class="cnt">
+          <div class="kv">🧮 <b>CPI YoY:</b> <span id="cpi"></span> <span class="muted" id="cpimonth"></span></div>
+          <div class="kv">🏛️ <b>FOMC:</b> <span id="fomc"></span></div>
+          <div class="kv">🧾 <b>PCE:</b> <span id="pce"></span></div>
+          <div class="kv" id="fedwatch"></div>
+          <div class="sources" id="macro-sources"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hdr"><h2>Bitcoin (BTC)</h2></div>
+        <div class="cnt">
+          <div class="flex">
+            <div>
+              <div class="price" id="btc-price">$–</div>
+              <div class="small" id="btc-delta"></div>
+            </div>
+            <div class="small muted" id="etf"></div>
+          </div>
+          <div class="sources" id="btc-sources"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hdr"><h2>Kaspa (KAS)</h2></div>
+        <div class="cnt">
+          <div class="price" id="kas-price">$–</div>
+          <div class="small" id="kas-delta"></div>
+          <div class="sources" id="kas-sources"></div>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column: 1/-1;">
+        <div class="hdr"><h2>Peak‑Watch (BTC)</h2></div>
+        <div class="cnt">
+          <div class="grid4" id="peak-grid"></div>
+          <div class="sources" id="peak-sources"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hdr"><h2>Risiko‑Ampel</h2></div>
+        <div class="cnt">
+          <div class="flex"><div id="risk-label" class="kv"></div><div class="kv" id="risk-score"></div></div>
+          <div class="riskbar"><div id="riskbar-fill" style="width:0%; background:#10b981;"></div></div>
+          <div class="small muted" style="margin-top:8px;">Heuristik: ✅=0, ⚠️=1, 🔥=2 · Gewichte: MVRV 1.5, Puell 1.0, RHODL 1.2, SOPR 0.8, Funding 0.8, OI 1.0, Miner 0.7, Trends 0.6.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hdr"><h2>Kalender</h2></div>
+        <div class="cnt">
+          <ul class="cal" id="cal-list"></ul>
+          <div class="sources" id="cal-sources"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="settings" class="card hidden" style="margin-top:16px;">
+      <div class="hdr"><h2>Einstellungen</h2></div>
+      <div class="cnt">
+        <div class="controls">
+          <label>Endpoint‑URL (liefert DashboardData JSON)</label>
+          <input type="text" id="endpoint" placeholder="https://example.com/api/crypto/brief">
+          <div class="flex">
+            <button class="btn primary" id="btn-fetch">Fetch</button>
+            <button class="btn" id="btn-save">URL speichern</button>
+          </div>
+          <label>Manuelle Daten (JSON)</label>
+          <textarea rows="8" id="manualjson" placeholder='{"generated_at":"...","tldr":{...}}'></textarea>
+          <div class="flex">
+            <button class="btn" id="btn-apply">Anwenden</button>
+            <button class="btn" id="btn-filldemo">Demo einfügen</button>
+          </div>
+          <div class="small muted">Tipp: In Android‑Chrome über <b>⋮ → Zum Startbildschirm hinzufügen</b> als App ablegen.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">© 2025 · Single‑file Dashboard (PWA‑fähig). Zum Installieren als App hosten (GitHub Pages/Netlify) und dann <b>Zum Startbildschirm hinzufügen</b>.</div>
+  </div>
+
+  <script>
+    const weights = {{ mvrv: 1.5, puell: 1.0, rhodl: 1.2, sopr: 0.8, funding: 0.8, oi: 1.0, miner: 0.7, trends: 0.6 }};
+    function scoreFor(status) {{ return status === 'overheated' ? 2 : status === 'elevated' ? 1 : 0; }}
+    function riskScore(peak) {{
+      if (!peak) return {{ total: 0, light: 'green' }};
+      const total = (scoreFor(peak.mvrv?.status)*weights.mvrv +
+                     scoreFor(peak.puell?.status)*weights.puell +
+                     scoreFor(peak.rhodl?.status)*weights.rhodl +
+                     scoreFor(peak.sopr?.status)*weights.sopr +
+                     scoreFor(peak.funding?.status)*weights.funding +
+                     scoreFor(peak.oi?.status)*weights.oi +
+                     scoreFor(peak.miner?.status)*weights.miner +
+                     scoreFor(peak.trends?.status)*weights.trends);
+      const light = total < 3 ? 'green' : (total <= 6 ? 'yellow' : 'red');
+      return {{ total: Number(total.toFixed(1)), light }};
+    }}
+    function setText(id, val) {{ const el = document.getElementById(id); if (el) el.textContent = val ?? ''; }}
+    function renderSources(id, arr) {{ const el = document.getElementById(id); if (!el) return; el.textContent = (arr&&arr.length)? ('Quellen: ' + arr.join(', ')) : ''; }}
+
+    function render(data) {{
+      setText('last-upd', 'Letztes Update: ' + new Date(data.generated_at).toLocaleString());
+      const stance = (data.tldr?.stance||'Neutral').toLowerCase();
+      const stanceEl = document.getElementById('stance');
+      stanceEl.className = 'tldr-stance ' + (stance==='bullish'?'bullish':stance==='bearish'?'bearish':'neutral');
+      setText('stance', data.tldr?.stance || 'Neutral');
+      setText('headline', data.tldr?.headline || '');
+
+      setText('cpi', (data.macro?.cpi_yoy!=null)? (data.macro.cpi_yoy.toFixed(1) + ' %'): '–');
+      setText('cpimonth', data.macro?.cpi_month ? '('+data.macro.cpi_month+')':'');
+      setText('fomc', data.macro?.fomc_next || '–');
+      setText('pce', data.macro?.pce_date || '–');
+      setText('fedwatch', data.macro?.fedwatch_comment || '');
+      renderSources('macro-sources', data.macro?.sources || []);
+
+      setText('btc-price', data.btc?.price!=null ? '$' + data.btc.price.toLocaleString() : '$–');
+      const bd = document.getElementById('btc-delta');
+      if (bd && data.btc?.ch24!=null) {{
+        bd.textContent = (data.btc.ch24>=0?'+':'') + data.btc.ch24.toFixed(2) + '% / 24h';
+        bd.className = 'small ' + (data.btc.ch24>=0?'delta up':'delta down');
+      }}
+      setText('etf', data.btc?.etf_flows_comment || '');
+      renderSources('btc-sources', data.btc?.sources || []);
+
+      setText('kas-price', data.kas?.price!=null ? '$' + (Math.round(data.kas.price*10000)/10000).toFixed(4) : '$–');
+      const kd = document.getElementById('kas-delta');
+      if (kd && data.kas?.ch24!=null) {{
+        kd.textContent = (data.kas.ch24>=0?'+':'') + data.kas.ch24.toFixed(2) + '% / 24h';
+        kd.className = 'small ' + (data.kas.ch24>=0?'delta up':'delta down');
+      }}
+      renderSources('kas-sources', data.kas?.sources || []);
+
+      const grid = document.getElementById('peak-grid');
+      if (grid) {{
+        const map = [ ['mvrv','MVRV Z‑Score'], ['puell','Puell Multiple'], ['rhodl','RHODL Ratio'], ['sopr','SOPR'],
+                      ['funding','Funding‑Rate'], ['oi','Open Interest'], ['miner','Miner‑Flows'], ['trends','Google Trends'] ];
+        grid.innerHTML = map.map(([k,label]) => {{
+          const it = data.peak?.[k] || {{ status:'neutral' }};
+          const cls = it.status==='neutral'?'pill neutral':it.status==='elevated'?'pill elevated':'pill overheated';
+          const lbl = it.status==='neutral'?'Neutral':it.status==='elevated'?'Erhöht':'Überhitzt';
+          return `<div class="status-card"><div class="flex"><div class="kv" style="font-weight:600;">${{label}}</div><span class="${{cls}}">${{lbl}}</span></div>${{it.note?`<div class='small muted' style='margin-top:6px;'>${{it.note}}</div>`:''}}</div>`;
+        }}).join('');
+      }}
+      renderSources('peak-sources', data.peak?.sources || []);
+
+      const r = riskScore(data.peak||{});
+      setText('risk-score', 'Score: ' + r.total);
+      const label = r.light==='green'?'🟢 Niedrig': (r.light==='yellow'?'🟡 Moderat':'🔴 Hoch');
+      setText('risk-label', label);
+      const fill = document.getElementById('riskbar-fill');
+      if (fill) {{
+        let pct = 0;
+        if (r.light==='green') pct = Math.min(100, (r.total/6)*100);
+        else if (r.light==='yellow') pct = Math.min(100, ((r.total-3)/3)*100);
+        else pct = Math.min(100, ((r.total-6)/3)*100);
+        fill.style.width = pct + '%';
+        fill.style.background = r.light==='green'?'#10b981':(r.light==='yellow'?'#f59e0b':'#ef4444');
+      }}
+
+      const ul = document.getElementById('cal-list');
+      if (ul) {{
+        ul.innerHTML = (data.calendar?.items||[]).map(it => `<li><b>${{it.date}}</b> — ${{it.title}} ${{
+          it.source?`<span class='muted'>(${{
+            it.source
+          }})</span>`:''}}</li>`).join('');
+      }}
+      renderSources('cal-sources', data.calendar?.sources || []);
+    }}
+
+    const settings = document.getElementById('settings');
+    document.getElementById('btn-settings').onclick = () => {{
+      settings.classList.toggle('hidden');
+    }};
+    document.getElementById('btn-demo').onclick = () => {{
+      render({"generated_at": "2025-08-16T08:17:43.355569Z", "tldr": {"headline": "Neutral → leicht risk‑on: Märkte preisen Sept‑Senkung ein; ETF‑Zuflüsse positiv.", "stance": "Neutral"}, "macro": {"cpi_yoy": 2.7, "cpi_month": "Juli 2025", "pce_date": "29.08.2025", "fomc_next": "16.–17.09.2025", "fedwatch_comment": "Futures implizieren hohe Chance auf −25 bp im September.", "sources": ["BLS CPI (July 2025)", "CME FedWatch", "Federal Reserve FOMC calendar", "Kansas City Fed – Jackson Hole"]}, "btc": {"price": 117651, "ch24": -1.17, "spark": [{"t": "-6h", "v": 118900}, {"t": "-4h", "v": 118200}, {"t": "-2h", "v": 117900}, {"t": "now", "v": 117651}], "etf_flows_comment": "+114 Mio (15.08) · +524 Mio (14.08) laut Farside", "sources": ["Farside Investors", "CME BTC Futures"]}, "kas": {"price": 0.0902, "ch24": -2.04, "spark": [{"t": "-6h", "v": 0.0915}, {"t": "-4h", "v": 0.091}, {"t": "-2h", "v": 0.0908}, {"t": "now", "v": 0.0902}], "sources": ["CoinMarketCap"]}, "peak": {"mvrv": {"status": "elevated", "note": "oberer Mittelbereich"}, "puell": {"status": "neutral"}, "rhodl": {"status": "elevated"}, "sopr": {"status": "elevated", "note": ">1 Umfeld"}, "funding": {"status": "elevated", "note": "leicht positiv"}, "oi": {"status": "elevated", "note": "> 30T‑Ø"}, "miner": {"status": "neutral"}, "trends": {"status": "neutral"}, "sources": ["LookIntoBitcoin / BM Pro", "Coinglass (Funding, OI)", "The Block / Google Trends"]}, "calendar": {"items": [{"date": "21.–23.08.2025", "title": "Jackson Hole Symposium", "source": "Kansas City Fed"}, {"date": "29.08.2025", "title": "US PCE (Juli)", "source": "BEA"}, {"date": "10.09.2025", "title": "US PPI (August)", "source": "BLS"}, {"date": "11.09.2025", "title": "US CPI (August)", "source": "BLS"}, {"date": "16.–17.09.2025", "title": "FOMC Meeting", "source": "Federal Reserve"}], "sources": ["BLS", "BEA", "Federal Reserve", "Kansas City Fed"]}});
+    }};
+    document.getElementById('btn-filldemo').onclick = () => {{
+      document.getElementById('manualjson').value = JSON.stringify({"generated_at": "2025-08-16T08:17:43.355569Z", "tldr": {"headline": "Neutral → leicht risk‑on: Märkte preisen Sept‑Senkung ein; ETF‑Zuflüsse positiv.", "stance": "Neutral"}, "macro": {"cpi_yoy": 2.7, "cpi_month": "Juli 2025", "pce_date": "29.08.2025", "fomc_next": "16.–17.09.2025", "fedwatch_comment": "Futures implizieren hohe Chance auf −25 bp im September.", "sources": ["BLS CPI (July 2025)", "CME FedWatch", "Federal Reserve FOMC calendar", "Kansas City Fed – Jackson Hole"]}, "btc": {"price": 117651, "ch24": -1.17, "spark": [{"t": "-6h", "v": 118900}, {"t": "-4h", "v": 118200}, {"t": "-2h", "v": 117900}, {"t": "now", "v": 117651}], "etf_flows_comment": "+114 Mio (15.08) · +524 Mio (14.08) laut Farside", "sources": ["Farside Investors", "CME BTC Futures"]}, "kas": {"price": 0.0902, "ch24": -2.04, "spark": [{"t": "-6h", "v": 0.0915}, {"t": "-4h", "v": 0.091}, {"t": "-2h", "v": 0.0908}, {"t": "now", "v": 0.0902}], "sources": ["CoinMarketCap"]}, "peak": {"mvrv": {"status": "elevated", "note": "oberer Mittelbereich"}, "puell": {"status": "neutral"}, "rhodl": {"status": "elevated"}, "sopr": {"status": "elevated", "note": ">1 Umfeld"}, "funding": {"status": "elevated", "note": "leicht positiv"}, "oi": {"status": "elevated", "note": "> 30T‑Ø"}, "miner": {"status": "neutral"}, "trends": {"status": "neutral"}, "sources": ["LookIntoBitcoin / BM Pro", "Coinglass (Funding, OI)", "The Block / Google Trends"]}, "calendar": {"items": [{"date": "21.–23.08.2025", "title": "Jackson Hole Symposium", "source": "Kansas City Fed"}, {"date": "29.08.2025", "title": "US PCE (Juli)", "source": "BEA"}, {"date": "10.09.2025", "title": "US PPI (August)", "source": "BLS"}, {"date": "11.09.2025", "title": "US CPI (August)", "source": "BLS"}, {"date": "16.–17.09.2025", "title": "FOMC Meeting", "source": "Federal Reserve"}], "sources": ["BLS", "BEA", "Federal Reserve", "Kansas City Fed"]}}, null, 2);
+    }};
+    document.getElementById('btn-apply').onclick = () => {{
+      const raw = document.getElementById('manualjson').value;
+      try {{
+        const j = JSON.parse(raw);
+        render(j);
+      }} catch(e) {{ alert('Ungültiges JSON: '+e); }}
+    }};
+    const ep = document.getElementById('endpoint');
+    try {{
+      const saved = localStorage.getItem('cryptoDash.endpoint');
+      if (saved) ep.value = saved;
+    }} catch(e) {{}}
+    document.getElementById('btn-save').onclick = () => {{
+      localStorage.setItem('cryptoDash.endpoint', ep.value||'');
+      alert('Gespeichert.');
+    }};
+    document.getElementById('btn-fetch').onclick = async () => {{
+      if (!ep.value) return alert('Bitte Endpoint‑URL eintragen.');
+      try {{
+        const resp = await fetch(ep.value, {{ headers: {{ 'accept':'application/json' }} }});
+        if (!resp.ok) throw new Error('HTTP '+resp.status);
+        const j = await resp.json();
+        render(j);
+      }} catch(e) {{
+        alert('Fetch-Fehler: '+e.message);
+      }}
+    }};
+    render({"generated_at": "2025-08-16T08:17:43.355569Z", "tldr": {"headline": "Neutral → leicht risk‑on: Märkte preisen Sept‑Senkung ein; ETF‑Zuflüsse positiv.", "stance": "Neutral"}, "macro": {"cpi_yoy": 2.7, "cpi_month": "Juli 2025", "pce_date": "29.08.2025", "fomc_next": "16.–17.09.2025", "fedwatch_comment": "Futures implizieren hohe Chance auf −25 bp im September.", "sources": ["BLS CPI (July 2025)", "CME FedWatch", "Federal Reserve FOMC calendar", "Kansas City Fed – Jackson Hole"]}, "btc": {"price": 117651, "ch24": -1.17, "spark": [{"t": "-6h", "v": 118900}, {"t": "-4h", "v": 118200}, {"t": "-2h", "v": 117900}, {"t": "now", "v": 117651}], "etf_flows_comment": "+114 Mio (15.08) · +524 Mio (14.08) laut Farside", "sources": ["Farside Investors", "CME BTC Futures"]}, "kas": {"price": 0.0902, "ch24": -2.04, "spark": [{"t": "-6h", "v": 0.0915}, {"t": "-4h", "v": 0.091}, {"t": "-2h", "v": 0.0908}, {"t": "now", "v": 0.0902}], "sources": ["CoinMarketCap"]}, "peak": {"mvrv": {"status": "elevated", "note": "oberer Mittelbereich"}, "puell": {"status": "neutral"}, "rhodl": {"status": "elevated"}, "sopr": {"status": "elevated", "note": ">1 Umfeld"}, "funding": {"status": "elevated", "note": "leicht positiv"}, "oi": {"status": "elevated", "note": "> 30T‑Ø"}, "miner": {"status": "neutral"}, "trends": {"status": "neutral"}, "sources": ["LookIntoBitcoin / BM Pro", "Coinglass (Funding, OI)", "The Block / Google Trends"]}, "calendar": {"items": [{"date": "21.–23.08.2025", "title": "Jackson Hole Symposium", "source": "Kansas City Fed"}, {"date": "29.08.2025", "title": "US PCE (Juli)", "source": "BEA"}, {"date": "10.09.2025", "title": "US PPI (August)", "source": "BLS"}, {"date": "11.09.2025", "title": "US CPI (August)", "source": "BLS"}, {"date": "16.–17.09.2025", "title": "FOMC Meeting", "source": "Federal Reserve"}], "sources": ["BLS", "BEA", "Federal Reserve", "Kansas City Fed"]}});
+    if ('serviceWorker' in navigator) {{
+      navigator.serviceWorker.register('./sw.js').catch(()=>{{}});
+    }}
+  </script>
+</body>
+</html>
