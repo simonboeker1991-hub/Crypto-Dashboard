@@ -1,4 +1,4 @@
-const CACHE_NAME = 'crypto-dash-v6'; // Version anheben
+const CACHE_NAME = 'crypto-dash-v7';
 const ASSETS = [
   './index.html',
   './manifest.webmanifest',
