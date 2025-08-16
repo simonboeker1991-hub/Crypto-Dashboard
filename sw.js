@@ -1,4 +1,4 @@
-const CACHE_NAME = 'crypto-dash-v7';
+const CACHE_NAME = 'crypto-dash-v8';
 const ASSETS = [
   './index.html',
   './manifest.webmanifest',
