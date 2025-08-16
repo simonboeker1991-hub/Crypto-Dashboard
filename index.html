@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Krypto-Dashboard · FED · BTC · KAS · Risiko-Ampel</title>
+  <title>Crypto-Dashboard · FED · BTC · KAS · Risiko-Ampel</title>
   <meta name="theme-color" content="#0f172a">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
@@ -55,7 +55,7 @@
   <div class="container">
     <div class="flex">
       <div>
-        <h1>Krypto-Dashboard <span class="muted">· FED · BTC · KAS · Risiko-Ampel</span></h1>
+        <h1>Crypto-Dashboard <span class="muted">· FED · BTC · KAS · Risiko-Ampel</span></h1>
         <div class="sub" id="last-upd">Letztes Update: –</div>
       </div>
       <div class="right">
@@ -67,7 +67,12 @@
     <!-- TL;DR -->
     <div class="card" style="margin-top:12px;">
       <div class="hdr"><h2>TL;DR <span class="tldr-stance neutral" id="stance"></span></h2></div>
-      <div class="cnt"><div id="headline" class="kv"></div></div>
+      <div class="cnt">
+        <div class="small muted" id="tldr-meaning">
+          Bedeutung: „Too Long; Didn’t Read“ – ein einzeiliges Kurzfazit (Bullish/Neutral/Bearish) mit 1–2 Hauptgründen.
+        </div>
+        <div id="headline" class="kv"></div>
+      </div>
     </div>
 
     <!-- Grid -->
@@ -164,7 +169,7 @@
   </div>
 
   <script>
-    /* ---------- Demo-Daten (werden nur genutzt, wenn kein Endpoint gespeichert ist) ---------- */
+    /* ---------- Demo-Daten ---------- */
     const DEMO = {
       "generated_at": new Date().toISOString(),
       "tldr": {"headline":"Neutral → leicht risk-on: Märkte preisen Sept-Senkung ein; ETF-Zuflüsse positiv.","stance":"Neutral"},
@@ -173,11 +178,7 @@
         "fedwatch_comment":"Futures implizieren hohe Chance auf −25 bp im September.",
         "sources":["BLS CPI (July 2025)","CME FedWatch","Federal Reserve FOMC calendar","Kansas City Fed – Jackson Hole"]
       },
-      "btc": {
-        "price": 117651, "ch24": -1.17,
-        "etf_flows_comment":"+114 Mio (15.08) · +524 Mio (14.08) laut Farside",
-        "sources":["Farside Investors","CME BTC Futures"]
-      },
+      "btc": { "price": 117651, "ch24": -1.17, "etf_flows_comment":"+114 Mio (15.08) · +524 Mio (14.08) laut Farside", "sources":["Farside Investors","CME BTC Futures"] },
       "kas": { "price": 0.0902, "ch24": -2.04, "sources": ["CoinMarketCap"] },
       "peak": {
         "mvrv":{"status":"elevated","note":"oberer Mittelbereich"},
