@@ -1,4 +1,4 @@
-const CACHE_NAME = 'crypto-dash-v5';
+const CACHE_NAME = 'crypto-dash-v6'; // Version anheben
 const ASSETS = [
   './index.html',
   './manifest.webmanifest',
@@ -20,6 +20,5 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // Statische Dateien aus dem Cache, sonst Netz
   e.respondWith(caches.match(e.request).then((resp) => resp || fetch(e.request)));
 });
