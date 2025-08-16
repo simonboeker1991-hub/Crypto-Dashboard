@@ -1,14 +1,25 @@
+const CACHE_NAME = 'crypto-dash-v2';
+const ASSETS = [
+  './index.html',
+  './manifest.webmanifest',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
+];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open('crypto-dash-v1').then((c) => c.addAll([
-    './index.html',
-    './manifest.webmanifest',
-    './icons/icon-192.png',
-    './icons/icon-512.png'
-  ])));
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS)));
 });
-self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then((resp) => resp || fetch(e.request))
+
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((k) => (k === CACHE_NAME ? null : caches.delete(k))))
+    ).then(() => self.clients.claim())
   );
+});
+
+self.addEventListener('fetch', (e) => {
+  // Statische Dateien aus dem Cache, sonst Netz
+  e.respondWith(caches.match(e.request).then((resp) => resp || fetch(e.request)));
 });
