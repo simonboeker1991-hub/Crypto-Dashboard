@@ -1,11 +1,9 @@
 {
-  "generated_at": "2025-08-16T11:30:00Z",
-
+  "generated_at": "2025-08-16T11:45:00Z",
   "tldr": {
-    "headline": "Neutral → leicht risk-on: Märkte preisen Zinssenkung im Sep ein; ETF-Zuflüsse stabil.",
+    "headline": "Neutral → leicht risk-on: Märkte preisen Sep-Senkung ein; ETF-Zuflüsse stabil.",
     "stance": "Neutral"
   },
-
   "macro": {
     "cpi_yoy": 2.7,
     "cpi_month": "Juli 2025",
@@ -14,7 +12,6 @@
     "fedwatch_comment": "Futures signalisieren erhöhte Wahrscheinlichkeit für −25 bp im September.",
     "sources": ["BLS (CPI)", "BEA (PCE)", "Federal Reserve FOMC Calendar", "CME FedWatch"]
   },
-
   "btc": {
     "price": 117651,
     "ch24": -1.17,
@@ -27,7 +24,6 @@
     "etf_flows_comment": "+114 Mio (15.08) · +524 Mio (14.08) laut Farside",
     "sources": ["Farside Investors", "CME BTC Futures"]
   },
-
   "kas": {
     "price": 0.0902,
     "ch24": -2.04,
@@ -39,19 +35,17 @@
     },
     "sources": ["CoinMarketCap"]
   },
-
   "peak": {
-    "mvrv":   { "status": "elevated",  "note": "oberer Mittelbereich" },
-    "puell":  { "status": "neutral" },
-    "rhodl":  { "status": "elevated" },
-    "sopr":   { "status": "elevated",  "note": ">1 Umfeld" },
-    "funding":{ "status": "elevated",  "note": "leicht positiv" },
-    "oi":     { "status": "elevated",  "note": "> 30T-Ø" },
-    "miner":  { "status": "neutral" },
+    "mvrv": { "status": "elevated", "note": "oberer Mittelbereich" },
+    "puell": { "status": "neutral" },
+    "rhodl": { "status": "elevated" },
+    "sopr": { "status": "elevated", "note": ">1 Umfeld" },
+    "funding": { "status": "elevated", "note": "leicht positiv" },
+    "oi": { "status": "elevated", "note": "> 30T-Ø" },
+    "miner": { "status": "neutral" },
     "trends": { "status": "neutral" },
     "sources": ["LookIntoBitcoin / BM Pro", "Coinglass (Funding, OI)", "Google Trends"]
   },
-
   "calendar": {
     "items": [
       {
@@ -71,30 +65,43 @@
         "link": "https://www.bea.gov/"
       },
       {
-        "date": "2025-09-10",
-        "title": "US PPI (August)",
-        "impact": "med",
-        "desc": "Erzeugerpreise – Frühindikator für CPI.",
-        "source": "BLS",
-        "link": "https://www.bls.gov/"
-      },
-      {
         "date": "2025-09-11",
         "title": "US CPI (August)",
         "impact": "high",
         "desc": "Kern- und Gesamtinflation; stärkster kurzfristiger Markttreiber.",
         "source": "BLS",
         "link": "https://www.bls.gov/"
-      },
-      {
-        "date": "16.–17.09.2025",
-        "title": "FOMC Meeting",
-        "impact": "high",
-        "desc": "Zinsentscheid + Dot Plot + Pressekonferenz.",
-        "source": "Federal Reserve",
-        "link": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
       }
     ],
-    "sources": ["BLS", "BEA", "Federal Reserve", "Kansas City Fed"]
+    "sources": ["BLS", "BEA", "Federal Reserve"]
+  },
+  "news": {
+    "items": [
+      {
+        "title": "BTC hält wichtige Unterstützung – Derivate signalisieren Risikoappetit",
+        "source": "The Block",
+        "time": "2025-08-16T09:20:00Z",
+        "tickers": ["BTC"],
+        "summary": "Perpetual Funding leicht positiv; Open Interest über 30T-Durchschnitt – erhöhtes Risiko, aber kein Extrem.",
+        "url": "https://example.com/news1"
+      },
+      {
+        "title": "Kaspa integriert neuen Mining-Client",
+        "source": "Kaspa Core",
+        "time": "2025-08-15T18:05:00Z",
+        "tickers": ["KAS"],
+        "summary": "Leistungsverbesserungen und stabilere Hashrate; kurzfristig neutral, mittelfristig positiv.",
+        "url": "https://example.com/news2"
+      },
+      {
+        "title": "Fedwatch: 25bp-Senkung im September eingepreist",
+        "source": "CME",
+        "time": "2025-08-16T07:55:00Z",
+        "tickers": ["MACRO"],
+        "summary": "Zinssenkungschance weiter hoch; CPI-Pfad bleibt entscheidend.",
+        "url": "https://example.com/news3"
+      }
+    ],
+    "sources": ["CME", "The Block", "Projektfeeds / n8n"]
   }
 }
