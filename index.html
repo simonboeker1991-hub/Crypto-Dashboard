@@ -57,6 +57,11 @@
     .link-small{font-size:12px;color:var(--blue);text-decoration:none}
     .link-small:hover{text-decoration:underline}
     .spark{width:100%;height:64px;display:block;margin-top:8px}
+    /* Tabs */
+    .tabs{display:inline-flex;border:1px solid var(--border);border-radius:999px;overflow:hidden}
+    .tab{appearance:none;border:0;margin:0;padding:6px 10px;background:#fff;color:#334155;cursor:pointer;font-size:12px}
+    .tab+ .tab{border-left:1px solid var(--border)}
+    .tab.active{background:var(--blue);color:#fff}
     .tag{display:inline-flex;align-items:center;padding:2px 6px;border-radius:999px;font-size:11px;font-weight:600}
     .tag.high{background:#fee2e2;color:#991b1b}
     .tag.med{background:#fffbeb;color:#92400e}
@@ -101,7 +106,15 @@
 
       <!-- BTC -->
       <div class="card">
-        <div class="hdr"><h2>Bitcoin (BTC)</h2></div>
+        <div class="hdr">
+          <h2>Bitcoin (BTC)</h2>
+          <div class="tabs" data-asset="btc">
+            <button class="tab active" data-tf="24h">24h</button>
+            <button class="tab" data-tf="7d">7T</button>
+            <button class="tab" data-tf="1m">1M</button>
+            <button class="tab" data-tf="1y">1J</button>
+          </div>
+        </div>
         <div class="cnt">
           <div class="flex">
             <div>
@@ -117,7 +130,15 @@
 
       <!-- KAS -->
       <div class="card">
-        <div class="hdr"><h2>Kaspa (KAS)</h2></div>
+        <div class="hdr">
+          <h2>Kaspa (KAS)</h2>
+          <div class="tabs" data-asset="kas">
+            <button class="tab active" data-tf="24h">24h</button>
+            <button class="tab" data-tf="7d">7T</button>
+            <button class="tab" data-tf="1m">1M</button>
+            <button class="tab" data-tf="1y">1J</button>
+          </div>
+        </div>
         <div class="cnt">
           <div class="price" id="kas-price">$–</div>
           <div class="small" id="kas-delta"></div>
@@ -130,9 +151,7 @@
       <div class="card" style="grid-column:1/-1;">
         <div class="hdr">
           <h2>Peak-Watch (BTC)</h2>
-          <a class="link-small" href="https://www.coinglass.com/bull-market-peak-signals" target="_blank" rel="noopener">
-            CoinGlass Peak Signals ↗
-          </a>
+          <a class="link-small" href="https://www.coinglass.com/bull-market-peak-signals" target="_blank" rel="noopener">CoinGlass Peak Signals ↗</a>
         </div>
         <div class="cnt">
           <div class="grid4" id="peak-grid"></div>
@@ -155,7 +174,7 @@
         <div class="hdr"><h2>Kalender</h2></div>
         <div class="cnt">
           <ul class="cal" id="cal-list"></ul>
-          <div class="small muted">Tipps: Tippe/Click auf einen Termin, um Details zu öffnen.</div>
+          <div class="small muted">Tipp: Klick auf einen Termin für Details/Links.</div>
           <div class="sources" id="cal-sources"></div>
         </div>
       </div>
@@ -187,20 +206,29 @@
   </div>
 
   <script>
-    /* ---------- Demo-Daten ---------- */
+    /* ---------- Demo-Daten (enthält 24h/7d/1m/1y) ---------- */
     const DEMO = {
       "generated_at": new Date().toISOString(),
       "tldr":{"headline":"Neutral → leicht risk-on: Märkte preisen Sept-Senkung ein; ETF-Zuflüsse positiv.","stance":"Neutral"},
-      "macro":{"cpi_yoy":2.7,"cpi_month":"Juli 2025","pce_date":"29.08.2025","fomc_next":"16.–17.09.2025","fedwatch_comment":"Futures implizieren hohe Chance auf −25 bp im September.","sources":["BLS CPI (July 2025)","CME FedWatch","Federal Reserve FOMC calendar","Kansas City Fed – Jackson Hole"]},
-      "btc":{"price":117651,"ch24":-1.17,"spark":[{"t":"-6h","v":118900},{"t":"-4h","v":118200},{"t":"-2h","v":117900},{"t":"now","v":117651}],"etf_flows_comment":"+114 Mio (15.08) · +524 Mio (14.08) laut Farside","sources":["Farside Investors","CME BTC Futures"]},
-      "kas":{"price":0.0902,"ch24":-2.04,"spark":[{"t":"-6h","v":0.0915},{"t":"-4h","v":0.0910},{"t":"-2h","v":0.0908},{"t":"now","v":0.0902}],"sources":["CoinMarketCap"]},
-      "peak":{"mvrv":{"status":"elevated","note":"oberer Mittelbereich"},"puell":{"status":"neutral"},"rhodl":{"status":"elevated"},"sopr":{"status":"elevated","note":">1 Umfeld"},"funding":{"status":"elevated","note":"leicht positiv"},"oi":{"status":"elevated","note":"> 30T-Ø"},"miner":{"status":"neutral"},"trends":{"status":"neutral"},"sources":["LookIntoBitcoin / BM Pro","Coinglass (Funding, OI)","The Block / Google Trends"]},
+      "macro":{"cpi_yoy":2.7,"cpi_month":"Juli 2025","pce_date":"29.08.2025","fomc_next":"16.–17.09.2025","fedwatch_comment":"Futures implizieren hohe Chance auf −25 bp im September.","sources":["BLS","CME FedWatch","Federal Reserve"]},
+      "btc":{
+        "price":117651,"ch24":-1.17,
+        "spark":{"24h":[118900,118200,117900,117651],"7d":[119500,118700,118300,118800,117900,117700,117651],"1m":[116000,119000,118200,117800,118400,117651],"1y":[43000,52000,61000,70000,76000,68000,75000,82000,77000,90000,98000,117651]},
+        "etf_flows_comment":"+114 Mio (15.08) · +524 Mio (14.08) laut Farside",
+        "sources":["Farside Investors","CME BTC Futures"]
+      },
+      "kas":{
+        "price":0.0902,"ch24":-2.04,
+        "spark":{"24h":[0.0915,0.0910,0.0908,0.0902],"7d":[0.093,0.092,0.091,0.0912,0.0909,0.0906,0.0902],"1m":[0.088,0.091,0.0895,0.0900,0.0907,0.0902],"1y":[0.036,0.045,0.055,0.062,0.070,0.065,0.078,0.082,0.089,0.094,0.092,0.0902]},
+        "sources":["CoinMarketCap"]
+      },
+      "peak":{"mvrv":{"status":"elevated"},"puell":{"status":"neutral"},"rhodl":{"status":"elevated"},"sopr":{"status":"elevated"},"funding":{"status":"elevated"},"oi":{"status":"elevated"},"miner":{"status":"neutral"},"trends":{"status":"neutral"},"sources":["LookIntoBitcoin","Coinglass","Google Trends"]},
       "calendar":{"items":[
-        {"date":"21.–23.08.2025","title":"Jackson Hole Symposium","impact":"high","desc":"Zentraleuropäische Notenbanker & Fed – mögliche Hinweise zur Geldpolitik.","source":"Kansas City Fed","link":"https://www.kansascityfed.org/research/jackson-hole-economic-policy-symposium/"},
-        {"date":"29.08.2025","title":"US PCE (Juli)","impact":"high","desc":"Bevorzugtes Inflationsmaß der Fed; wichtig für September-Entscheidung.","source":"BEA","link":"https://www.bea.gov/"},
+        {"date":"21.–23.08.2025","title":"Jackson Hole Symposium","impact":"high","desc":"Notenbanker & Fed – Hinweise zur Geldpolitik.","source":"Kansas City Fed","link":"https://www.kansascityfed.org/research/jackson-hole-economic-policy-symposium/"},
+        {"date":"29.08.2025","title":"US PCE (Juli)","impact":"high","desc":"Bevorzugtes Inflationsmaß der Fed.","source":"BEA","link":"https://www.bea.gov/"},
         {"date":"10.09.2025","title":"US PPI (August)","impact":"med","desc":"Erzeugerpreise – Frühindikator für CPI.","source":"BLS","link":"https://www.bls.gov/"},
-        {"date":"11.09.2025","title":"US CPI (August)","impact":"high","desc":"Kern- und Gesamtinflation; stärkster Markttreiber.","source":"BLS","link":"https://www.bls.gov/"},
-        {"date":"16.–17.09.2025","title":"FOMC Meeting","impact":"high","desc":"Zinsentscheid + Dot Plot/Pressekonferenz.","source":"Federal Reserve","link":"https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"}
+        {"date":"11.09.2025","title":"US CPI (August)","impact":"high","desc":"Kern- und Gesamtinflation.","source":"BLS","link":"https://www.bls.gov/"},
+        {"date":"16.–17.09.2025","title":"FOMC Meeting","impact":"high","desc":"Zinsentscheid + Pressekonferenz.","source":"Federal Reserve","link":"https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"}
       ],"sources":["BLS","BEA","Federal Reserve","Kansas City Fed"]}
     };
 
@@ -208,11 +236,23 @@
     const weights={mvrv:1.5,puell:1.0,rhodl:1.2,sopr:0.8,funding:0.8,oi:1.0,miner:0.7,trends:0.6};
     const scoreFor=s=>s==='overheated'?2:(s==='elevated'?1:0);
     let LAST=null;
+    const TF_STATE={btc:'24h', kas:'24h'};
 
     function riskScore(p){if(!p)return{total:0,light:'green'};const t=scoreFor(p.mvrv?.status)*weights.mvrv+scoreFor(p.puell?.status)*weights.puell+scoreFor(p.rhodl?.status)*weights.rhodl+scoreFor(p.sopr?.status)*weights.sopr+scoreFor(p.funding?.status)*weights.funding+scoreFor(p.oi?.status)*weights.oi+scoreFor(p.miner?.status)*weights.miner+scoreFor(p.trends?.status)*weights.trends;return{total:Number(t.toFixed(1)),light:t<3?'green':(t<=6?'yellow':'red')}}
 
     function setText(id,val){const el=document.getElementById(id);if(el)el.textContent=(val??'')}
     function renderSources(id,arr){const el=document.getElementById(id);if(!el)return;el.textContent=(arr&&arr.length)?('Quellen: '+arr.join(', ')):''}
+
+    function seriesFrom(asset, tf){
+      const a = LAST?.[asset];
+      if(!a) return null;
+      // Unterstützt: spark = Array (als 24h) ODER spark = { "24h":[], "7d":[], ... }
+      if(Array.isArray(a.spark)) return (tf==='24h') ? a.spark.map((v,i)=>({v})) : null;
+      const obj = a.spark || {};
+      const raw = obj[tf] || obj[tf.toLowerCase()];
+      if(!raw) return null;
+      return raw.map((v,i)=>({v}));
+    }
 
     function drawSpark(id, points, color){
       const cv=document.getElementById(id);
@@ -260,13 +300,15 @@
       if(bd && data.btc?.ch24!=null){bd.textContent=(data.btc.ch24>=0?'+':'')+data.btc.ch24.toFixed(2)+'% / 24h'; bd.className='small '+(data.btc.ch24>=0?'delta up':'delta down');}
       setText('etf',data.btc?.etf_flows_comment||'');
       renderSources('btc-sources',data.btc?.sources||[]);
-      drawSpark('btc-chart', data.btc?.spark, getComputedStyle(document.documentElement).getPropertyValue('--btc').trim());
 
       setText('kas-price',data.kas?.price!=null?'$'+(Math.round(data.kas.price*10000)/10000).toFixed(4):'$–');
       const kd=document.getElementById('kas-delta');
       if(kd && data.kas?.ch24!=null){kd.textContent=(data.kas.ch24>=0?'+':'')+data.kas.ch24.toFixed(2)+'% / 24h'; kd.className='small '+(data.kas.ch24>=0?'delta up':'delta down');}
       renderSources('kas-sources',data.kas?.sources||[]);
-      drawSpark('kas-chart', data.kas?.spark, getComputedStyle(document.documentElement).getPropertyValue('--kas').trim());
+
+      // Charts gemäß aktuellem Tab-Status
+      drawSpark('btc-chart', seriesFrom('btc', TF_STATE.btc), getComputedStyle(document.documentElement).getPropertyValue('--btc').trim());
+      drawSpark('kas-chart', seriesFrom('kas', TF_STATE.kas), getComputedStyle(document.documentElement).getPropertyValue('--kas').trim());
 
       const grid=document.getElementById('peak-grid');
       if(grid){
@@ -296,7 +338,7 @@
       const ul=document.getElementById('cal-list');
       if(ul){
         ul.innerHTML=(data.calendar?.items||[]).map(it=>{
-          const impact=it.impact==='high'?'high':(it.impact==='medium'?'med':'low');
+          const impact=it.impact==='high'?'high':(it.impact==='medium'?'med':(it.impact==='med'?'med':'low'));
           const impactLabel=impact==='high'?'Hoch':(impact==='med'?'Mittel':'Niedrig');
           const pill = it.impact ? `<span class="tag ${impact}">${impactLabel}</span>` : '';
           const summary=`<b>${it.date}</b> — ${it.title} ${pill}`;
@@ -331,14 +373,32 @@
     document.getElementById('btn-save').onclick=()=>{localStorage.setItem('cryptoDash.endpoint',ep.value||'');alert('Gespeichert.');};
     document.getElementById('btn-fetch').onclick=()=>{if(!ep.value)return alert('Bitte Endpoint-URL eintragen.');localStorage.setItem('cryptoDash.endpoint',ep.value);doFetch(ep.value);};
 
+    // Tabs aktivieren (BTC + KAS)
+    function bindTabs(){
+      document.querySelectorAll('.tabs').forEach(group=>{
+        group.addEventListener('click', (e)=>{
+          const btn=e.target.closest('.tab'); if(!btn) return;
+          const asset=group.getAttribute('data-asset'); const tf=btn.getAttribute('data-tf');
+          TF_STATE[asset]=tf;
+          group.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b===btn));
+          if(LAST){
+            const color = asset==='btc' ? getComputedStyle(document.documentElement).getPropertyValue('--btc').trim()
+                                        : getComputedStyle(document.documentElement).getPropertyValue('--kas').trim();
+            drawSpark(asset+'-chart', seriesFrom(asset, tf), color);
+          }
+        });
+      });
+    }
+
     // Initial laden
     (function init(){
+      bindTabs();
       const saved=localStorage.getItem('cryptoDash.endpoint');
       if(saved){ep.value=saved;doFetch(saved);} else {render(DEMO);}
     })();
 
-    // Re-Draw der Charts bei Resize + Re-Fetch bei Sichtbarkeit/Online
-    window.addEventListener('resize', ()=>{ if(LAST){ drawSpark('btc-chart', LAST.btc?.spark, getComputedStyle(document.documentElement).getPropertyValue('--btc').trim()); drawSpark('kas-chart', LAST.kas?.spark, getComputedStyle(document.documentElement).getPropertyValue('--kas').trim()); }});
+    // Re-Draw bei Resize + Re-Fetch bei Sichtbarkeit/Online
+    window.addEventListener('resize', ()=>{ if(LAST){ drawSpark('btc-chart', seriesFrom('btc', TF_STATE.btc), getComputedStyle(document.documentElement).getPropertyValue('--btc').trim()); drawSpark('kas-chart', seriesFrom('kas', TF_STATE.kas), getComputedStyle(document.documentElement).getPropertyValue('--kas').trim()); }});
     document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){const s=localStorage.getItem('cryptoDash.endpoint');if(s)doFetch(s);}});
     window.addEventListener('online',()=>{const s=localStorage.getItem('cryptoDash.endpoint');if(s)doFetch(s);});
 
