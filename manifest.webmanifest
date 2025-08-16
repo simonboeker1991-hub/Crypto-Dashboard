@@ -1,20 +1,12 @@
 {
-  "name": "Krypto-Dashboard · FED · BTC · KAS · Risiko-Ampel",
-  "short_name": "KryptoDash",
+  "name": "Crypto-Dashboard · FED · BTC · KAS · Risiko-Ampel",
+  "short_name": "CryptoDash",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0f172a",
   "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
+    { "src": "icons/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "icons/icon-512.png", "type": "image/png", "sizes": "512x512" }
   ]
 }
