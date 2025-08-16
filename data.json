@@ -1,22 +1,100 @@
 {
+  "generated_at": "2025-08-16T11:30:00Z",
+
+  "tldr": {
+    "headline": "Neutral → leicht risk-on: Märkte preisen Zinssenkung im Sep ein; ETF-Zuflüsse stabil.",
+    "stance": "Neutral"
+  },
+
+  "macro": {
+    "cpi_yoy": 2.7,
+    "cpi_month": "Juli 2025",
+    "pce_date": "2025-08-29",
+    "fomc_next": "16.–17.09.2025",
+    "fedwatch_comment": "Futures signalisieren erhöhte Wahrscheinlichkeit für −25 bp im September.",
+    "sources": ["BLS (CPI)", "BEA (PCE)", "Federal Reserve FOMC Calendar", "CME FedWatch"]
+  },
+
   "btc": {
     "price": 117651,
     "ch24": -1.17,
     "spark": {
-      "24h": [118900, 118200, 117900, 117651],
+      "24h": [118900, 118400, 118050, 117900, 117780, 117651],
       "7d":  [119500, 118700, 118300, 118800, 117900, 117700, 117651],
       "1m":  [116000, 119000, 118200, 117800, 118400, 117651],
       "1y":  [43000, 52000, 61000, 70000, 76000, 68000, 75000, 82000, 77000, 90000, 98000, 117651]
-    }
+    },
+    "etf_flows_comment": "+114 Mio (15.08) · +524 Mio (14.08) laut Farside",
+    "sources": ["Farside Investors", "CME BTC Futures"]
   },
+
   "kas": {
     "price": 0.0902,
     "ch24": -2.04,
     "spark": {
-      "24h": [0.0915, 0.0910, 0.0908, 0.0902],
-      "7d":  [0.093, 0.092, 0.091, 0.0912, 0.0909, 0.0906, 0.0902],
-      "1m":  [0.088, 0.091, 0.0895, 0.0900, 0.0907, 0.0902],
-      "1y":  [0.036, 0.045, 0.055, 0.062, 0.070, 0.065, 0.078, 0.082, 0.089, 0.094, 0.092, 0.0902]
-    }
+      "24h": [0.0915, 0.0910, 0.0908, 0.0906, 0.0904, 0.0902],
+      "7d":  [0.0930, 0.0922, 0.0916, 0.0912, 0.0909, 0.0906, 0.0902],
+      "1m":  [0.0880, 0.0910, 0.0895, 0.0900, 0.0907, 0.0902],
+      "1y":  [0.0360, 0.0450, 0.0550, 0.0620, 0.0700, 0.0650, 0.0780, 0.0820, 0.0890, 0.0940, 0.0920, 0.0902]
+    },
+    "sources": ["CoinMarketCap"]
+  },
+
+  "peak": {
+    "mvrv":   { "status": "elevated",  "note": "oberer Mittelbereich" },
+    "puell":  { "status": "neutral" },
+    "rhodl":  { "status": "elevated" },
+    "sopr":   { "status": "elevated",  "note": ">1 Umfeld" },
+    "funding":{ "status": "elevated",  "note": "leicht positiv" },
+    "oi":     { "status": "elevated",  "note": "> 30T-Ø" },
+    "miner":  { "status": "neutral" },
+    "trends": { "status": "neutral" },
+    "sources": ["LookIntoBitcoin / BM Pro", "Coinglass (Funding, OI)", "Google Trends"]
+  },
+
+  "calendar": {
+    "items": [
+      {
+        "date": "21.–23.08.2025",
+        "title": "Jackson Hole Symposium",
+        "impact": "high",
+        "desc": "Treffen führender Notenbanker; mögliche Hinweise auf künftige Geldpolitik.",
+        "source": "Kansas City Fed",
+        "link": "https://www.kansascityfed.org/research/jackson-hole-economic-policy-symposium/"
+      },
+      {
+        "date": "2025-08-29",
+        "title": "US PCE (Juli)",
+        "impact": "high",
+        "desc": "Bevorzugtes Inflationsmaß der Fed – wichtig für die FOMC-Entscheidung.",
+        "source": "BEA",
+        "link": "https://www.bea.gov/"
+      },
+      {
+        "date": "2025-09-10",
+        "title": "US PPI (August)",
+        "impact": "med",
+        "desc": "Erzeugerpreise – Frühindikator für CPI.",
+        "source": "BLS",
+        "link": "https://www.bls.gov/"
+      },
+      {
+        "date": "2025-09-11",
+        "title": "US CPI (August)",
+        "impact": "high",
+        "desc": "Kern- und Gesamtinflation; stärkster kurzfristiger Markttreiber.",
+        "source": "BLS",
+        "link": "https://www.bls.gov/"
+      },
+      {
+        "date": "16.–17.09.2025",
+        "title": "FOMC Meeting",
+        "impact": "high",
+        "desc": "Zinsentscheid + Dot Plot + Pressekonferenz.",
+        "source": "Federal Reserve",
+        "link": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+      }
+    ],
+    "sources": ["BLS", "BEA", "Federal Reserve", "Kansas City Fed"]
   }
 }
